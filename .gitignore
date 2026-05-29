@@ -1,0 +1,11 @@
+
+# Playwright
+node_modules/
+.github/
+.playwright-mcp/
+.vscode/
+playwright-report/
+scripts/
+test-results/
+.env
+

@@ -1,0 +1,13 @@
+Generate a playwright test in javascript that:
+1.Opens the login page URL: https://portal.qan.aws.eseye.io/login
+2.Run the login tests using the following datasets:
+    Username: resellerqa, Password: Password#1, Expected: dashboard page is visible
+    Username: fakeuser, Password: fakepass, Expected: Unable to login. Incorrect username or password.
+3.For each test: 
+    Navigate to the loginpage URL 
+    Enter the Username
+    Click on Continue button
+    Enter the password
+    Verify the expected result 
+    Click on Logout 
+4.close the browser after all tests 
