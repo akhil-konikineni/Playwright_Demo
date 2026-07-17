@@ -1,0 +1,25 @@
+{
+  "titleValidation": {
+    "tooLong": "123456789",
+    "withSpace": "ab cd",
+    "specialChars": "!@#$%"
+  },
+  "mandatoryMissing": {
+    "noName": { "title": "QATest01", "countryCode": "testing121" },
+    "noTitle": { "name": "QAAutoCreate01", "countryCode": "testing121" },
+    "noCountryCode": { "name": "QAAutoCreate01", "title": "QATest01" }
+  },
+  "restricted": {
+    "username": "",
+    "password": ""
+  },
+  "approveBlocked": {
+    "description": "A requested record with DataCentreRef = '-' (null in DB) cannot be approved to active",
+    "dataCentreRefValue": "-"
+  },
+  "deleteBlocked": {
+    "description": "An active record linked to at least one IPPool cannot be deleted",
+    "knownBlockedName": "data9876543567",
+    "knownBlockedId": 5426
+  }
+}

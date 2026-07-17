@@ -1,0 +1,31 @@
+{
+  "create": {
+    "name": "QAAutoCreate01",
+    "title": "QATest01",
+    "countryCode": "testing121",
+    "dataCentreRef": "QAREF01",
+    "subdomain": "qa-subdomain-01"
+  },
+  "duplicate": {
+    "title": "demo123",
+    "id": 5624
+  },
+  "ipPoolBlocked": {
+    "name": "data9876543567",
+    "id": 5426
+  },
+  "api": {
+    "listEndpoint": "https://mno.api.qan.eseye.io/v2/dataCentre?pageToken=0&pageSize=50&getPageCount=false&enrich=title",
+    "countryEndpoint": "https://common.api.qan.eseye.io/v2/country",
+    "baseUrl": "https://mno.api.qan.eseye.io/v2/dataCentre"
+  },
+  "filter": {
+    "existingName": "QAAutoDC01",
+    "nonExistentTitle": "zzznoex1",
+    "specialChars": "!@#$%^&*()"
+  },
+  "statusValues": ["setup", "requested", "active", "deleted"],
+  "columns": {
+    "statusIndex": 6
+  }
+}

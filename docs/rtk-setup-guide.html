@@ -1,0 +1,1069 @@
+<title>RTK Setup & Reference Guide — Rust Token Killer</title>
+<meta name="description" content="Complete guide to installing, configuring and using RTK (Rust Token Killer) with Claude Code to reduce shell output tokens by up to 90%.">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #0F1209;
+    --surface:     #161C0E;
+    --surface-2:   #1C2414;
+    --border:      #2A3520;
+    --accent:      #7EC44A;
+    --accent-dim:  #4A7A20;
+    --text:        #DCE8D0;
+    --text-muted:  #7A9060;
+    --text-faint:  #3D5028;
+    --success:     #3DD68C;
+    --warning:     #F5C842;
+    --danger:      #EF5959;
+    --info:        #58C4E8;
+    --code-bg:     #0A0F05;
+    --sidebar-w:   258px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 28px 0 40px;
+    z-index: 100;
+  }
+
+  .sidebar-brand {
+    padding: 0 22px 22px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .brand-label {
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-family: Consolas, monospace;
+    margin-bottom: 6px;
+  }
+
+  .brand-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .brand-version {
+    font-size: 11px;
+    color: var(--accent);
+    font-family: Consolas, monospace;
+    margin-top: 4px;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-family: Consolas, monospace;
+    padding: 12px 22px 4px;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 7px 22px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.15s, background 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: rgba(126,196,74,0.06);
+    border-left-color: var(--accent-dim);
+  }
+
+  .nav-link.active {
+    color: var(--accent);
+    background: rgba(126,196,74,0.08);
+    border-left-color: var(--accent);
+  }
+
+  .nav-link.sub { padding-left: 34px; font-size: 12px; }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    padding: 52px 60px 80px 64px;
+    max-width: calc(var(--sidebar-w) + 860px);
+  }
+
+  .page-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+  }
+
+  .page-eyebrow {
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+    text-wrap: balance;
+    margin-bottom: 12px;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 58ch;
+    line-height: 1.6;
+  }
+
+  .meta-chips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .chip {
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .chip.accent { color: var(--accent); border-color: var(--accent-dim); background: rgba(126,196,74,0.07); }
+
+  /* ── SECTIONS ── */
+  .section { margin-bottom: 56px; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .section-num {
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  h2 { font-size: 22px; font-weight: 700; color: var(--text); text-wrap: balance; }
+  h3 { font-size: 15px; font-weight: 700; color: var(--text); margin: 24px 0 10px; text-wrap: balance; }
+
+  p { margin-bottom: 14px; color: var(--text-muted); }
+  p strong { color: var(--text); }
+
+  /* ── HOW IT WORKS DIAGRAM ── */
+  .arch-diagram {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+
+  .arch-node {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    text-align: center;
+    min-width: 130px;
+  }
+
+  .arch-node .node-label { font-size: 10px; color: var(--text-faint); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .arch-node .node-name { color: var(--text); font-weight: 600; }
+  .arch-node.highlight { border-color: var(--accent); }
+  .arch-node.highlight .node-name { color: var(--accent); }
+
+  .arch-arrow {
+    font-family: Consolas, monospace;
+    color: var(--text-faint);
+    font-size: 13px;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .arch-arrow .arrow-label { font-size: 10px; color: var(--accent); font-family: 'Segoe UI', sans-serif; }
+
+  /* ── STEPS ── */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 20px;
+    position: relative;
+  }
+
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 23px; top: 48px; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .step-num {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: Consolas, monospace;
+    font-size: 13px; font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+
+  .step-body { padding: 12px 0 32px; }
+  .step-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .step-desc { color: var(--text-muted); font-size: 14px; margin-bottom: 12px; }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 12px 0 16px;
+  }
+
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family: Consolas, monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .code-label { font-size: 11px; color: var(--text-faint); }
+
+  .code-block pre {
+    padding: 16px 18px; margin: 0;
+    overflow-x: auto;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 13px; line-height: 1.65;
+    color: var(--text);
+  }
+
+  .code-block pre .comment { color: var(--text-faint); }
+  .code-block pre .cmd     { color: #7EC8E3; }
+  .code-block pre .val     { color: var(--accent); }
+  .code-block pre .env     { color: var(--warning); }
+  .code-block pre .kw      { color: #C9A0DC; }
+  .code-block pre .num     { color: #F08080; }
+
+  code {
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: #7EC8E3;
+  }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-radius: 6px;
+    border-left: 3px solid;
+    padding: 13px 18px;
+    margin: 14px 0;
+    background: var(--surface-2);
+  }
+
+  .callout.warning { border-color: var(--warning); }
+  .callout.danger  { border-color: var(--danger); }
+  .callout.success { border-color: var(--success); }
+  .callout.info    { border-color: var(--info); }
+  .callout.accent  { border-color: var(--accent); }
+
+  .callout-title {
+    font-size: 11px; font-family: Consolas, monospace;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 6px;
+  }
+
+  .callout.warning .callout-title { color: var(--warning); }
+  .callout.danger  .callout-title { color: var(--danger); }
+  .callout.success .callout-title { color: var(--success); }
+  .callout.info    .callout-title { color: var(--info); }
+  .callout.accent  .callout-title { color: var(--accent); }
+
+  .callout p { margin: 0; font-size: 13.5px; color: var(--text-muted); }
+  .callout p + p { margin-top: 8px; }
+  .callout p strong { color: var(--text); }
+
+  /* ── COMMAND REFERENCE TABLE ── */
+  .cmd-ref {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .cmd-ref-header {
+    background: var(--surface-2);
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: Consolas, monospace;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .cmd-ref table { width: 100%; border-collapse: collapse; }
+
+  .cmd-ref td {
+    padding: 9px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: top;
+  }
+
+  .cmd-ref tr:last-child td { border-bottom: none; }
+
+  .cmd-ref td:first-child {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    color: #7EC8E3;
+    white-space: nowrap;
+    width: 42%;
+    padding-right: 12px;
+  }
+
+  .cmd-ref td:last-child { color: var(--text-muted); }
+
+  /* ── SAVINGS METERS ── */
+  .savings-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .savings-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .savings-num {
+    font-family: Consolas, monospace;
+    font-size: 26px; font-weight: 800;
+    color: var(--accent);
+    line-height: 1; margin-bottom: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .savings-label { font-size: 11.5px; color: var(--text-muted); }
+
+  /* ── TROUBLE LIST ── */
+  .trouble-list { display: flex; flex-direction: column; gap: 20px; }
+
+  .trouble-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .trouble-head {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .trouble-badge {
+    font-family: Consolas, monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    padding: 3px 8px; border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .trouble-badge.error { background: rgba(239,89,89,0.15); color: var(--danger); border: 1px solid rgba(239,89,89,0.3); }
+  .trouble-badge.warn  { background: rgba(245,200,66,0.12); color: var(--warning); border: 1px solid rgba(245,200,66,0.3); }
+
+  .trouble-error-text {
+    font-family: Consolas, monospace;
+    font-size: 13px; color: var(--text); font-weight: 600; line-height: 1.4;
+  }
+
+  .trouble-body { padding: 16px 20px; }
+  .trouble-body p { font-size: 13.5px; }
+  .cause-label { font-size: 10px; font-family: Consolas, monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 4px; }
+
+  /* ── QUICK REF ── */
+  .quick-ref {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .quick-ref-header {
+    background: var(--surface-2);
+    padding: 11px 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: Consolas, monospace;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .quick-ref table { width: 100%; border-collapse: collapse; }
+
+  .quick-ref td {
+    padding: 9px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; vertical-align: top;
+  }
+
+  .quick-ref tr:last-child td { border-bottom: none; }
+  .quick-ref td:first-child { font-family: Consolas, monospace; font-size: 12px; color: #7EC8E3; white-space: nowrap; width: 46%; padding-right: 12px; }
+  .quick-ref td:last-child { color: var(--text-muted); }
+
+  /* ── SCROLLBAR ── */
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  @media (max-width: 820px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 32px 24px 60px; }
+    .savings-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-label">Setup Guide</div>
+    <div class="brand-title">RTK — Rust Token Killer</div>
+    <div class="brand-version">rtk v0.42.4 · Windows</div>
+  </div>
+
+  <div class="nav-section-label">Getting Started</div>
+  <a class="nav-link" href="#overview">What RTK Does</a>
+  <a class="nav-link" href="#how-it-works">How It Works</a>
+
+  <div class="nav-section-label">Installation</div>
+  <a class="nav-link" href="#install">Installation Steps</a>
+  <a class="nav-link sub" href="#step1">1. Install RTK binary</a>
+  <a class="nav-link sub" href="#step2">2. Add Claude hook</a>
+  <a class="nav-link sub" href="#step3">3. Verify installation</a>
+
+  <div class="nav-section-label">Daily Use</div>
+  <a class="nav-link" href="#commands">Key Commands</a>
+  <a class="nav-link" href="#filters">Built-in Filters</a>
+  <a class="nav-link" href="#savings">Checking Savings</a>
+
+  <div class="nav-section-label">Help</div>
+  <a class="nav-link" href="#troubleshooting">Troubleshooting</a>
+  <a class="nav-link" href="#quickref">Quick Reference</a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <header class="page-header" id="top">
+    <div class="page-eyebrow">Developer Operations Guide</div>
+    <h1 class="page-title">RTK — Rust Token Killer<br>Setup & Reference Guide</h1>
+    <p class="page-subtitle">A complete guide to installing and configuring RTK as a transparent token-optimization layer for every shell command Claude Code runs — based on real usage that saved 89.9% of command output tokens.</p>
+    <div class="meta-chips">
+      <span class="chip accent">rtk v0.42.4</span>
+      <span class="chip">Windows 11</span>
+      <span class="chip">Claude Code CLI</span>
+      <span class="chip">89.9% savings achieved</span>
+      <span class="chip">Hook-based · zero overhead</span>
+    </div>
+  </header>
+
+  <!-- OVERVIEW -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <span class="section-num">§ 01</span>
+      <h2>What RTK Does</h2>
+    </div>
+
+    <p>RTK (Rust Token Killer) is a <strong>transparent CLI proxy</strong>. When Claude Code runs a shell command, RTK intercepts the output and strips all the noise — progress bars, padding, boilerplate headers, verbose paths — before that output enters Claude's context window.</p>
+
+    <p>The key word is <strong>transparent</strong>: Claude runs <code>git status</code> and gets back a filtered result. It doesn't need to know RTK exists, and you don't need to change any prompt or workflow. The savings happen automatically via a hook.</p>
+
+    <div class="arch-diagram">
+      <div class="arch-node">
+        <div class="node-label">Claude runs</div>
+        <div class="node-name">git status</div>
+      </div>
+      <div class="arch-arrow">
+        <span>→</span>
+        <span class="arrow-label">hook rewrites</span>
+      </div>
+      <div class="arch-node highlight">
+        <div class="node-label">intercepted by</div>
+        <div class="node-name">rtk git status</div>
+      </div>
+      <div class="arch-arrow">
+        <span>→</span>
+        <span class="arrow-label">filtered output</span>
+      </div>
+      <div class="arch-node">
+        <div class="node-label">enters context</div>
+        <div class="node-name">~80% smaller</div>
+      </div>
+    </div>
+
+    <div class="savings-grid">
+      <div class="savings-card">
+        <div class="savings-num">89.9%</div>
+        <div class="savings-label">Tokens saved in our project so far</div>
+      </div>
+      <div class="savings-card">
+        <div class="savings-num">49.8K</div>
+        <div class="savings-label">Tokens eliminated from 55.3K total</div>
+      </div>
+      <div class="savings-card">
+        <div class="savings-num">54</div>
+        <div class="savings-label">Commands filtered across 6 sessions</div>
+      </div>
+    </div>
+
+    <div class="callout accent">
+      <div class="callout-title">RTK vs Headroom — different jobs</div>
+      <p>RTK optimizes <strong>shell command output</strong> (the text that comes back from terminal commands). Headroom optimizes the <strong>conversation context</strong> sent to the LLM API. They work at different layers and are used together — RTK is not a replacement for Headroom.</p>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how-it-works">
+    <div class="section-header">
+      <span class="section-num">§ 02</span>
+      <h2>How It Works</h2>
+    </div>
+
+    <p>RTK works through Claude Code's <strong>PreToolUse hook</strong>. When Claude is about to run a Bash command, the hook intercepts it and prepends <code>rtk</code>. RTK then runs the command, captures the output, and applies a specialized filter for that tool type before returning it.</p>
+
+    <p>The hook is configured once in <code>~/.claude/settings.json</code> and applies globally to every project — you never touch it again.</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">how the hook works</span></div>
+      <pre><span class="comment"># Claude wants to run:</span>
+<span class="cmd">git log --oneline -20</span>
+
+<span class="comment"># Hook intercepts and rewrites to:</span>
+<span class="cmd">rtk git log --oneline -20</span>
+
+<span class="comment"># RTK runs the command, strips noise, returns compact output</span>
+<span class="comment"># Claude sees ~80% fewer tokens for the same information</span></pre>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">Zero cognitive overhead</div>
+      <p>Once the hook is installed, there is <strong>nothing else to do</strong>. RTK works silently on every command. You do not need to prefix commands manually, change any prompts, or adjust any workflow. The only exception is when you want to run RTK meta-commands directly (<code>rtk gain</code>, <code>rtk discover</code>).</p>
+    </div>
+  </section>
+
+  <!-- INSTALLATION -->
+  <section class="section" id="install">
+    <div class="section-header">
+      <span class="section-num">§ 03</span>
+      <h2>Installation Steps</h2>
+    </div>
+
+    <p>Three steps. Step 2 (the hook) is the critical one — without it, RTK is installed but does nothing for Claude Code.</p>
+
+    <div class="steps">
+
+      <!-- STEP 1 -->
+      <div class="step" id="step1">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Install the RTK binary</div>
+          <div class="step-desc">RTK is a Rust binary — no Python, no Node. Install from GitHub releases or via the install script. On this machine it is installed at <code>C:\Users\akhileswar.konikinen\AppData\Local\Programs\rtk\rtk.exe</code>.</div>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">powershell</span><span class="code-label">Install RTK</span></div>
+            <pre><span class="comment"># Option A — winget (recommended on Windows)</span>
+<span class="cmd">winget install rtk-ai.rtk</span>
+
+<span class="comment"># Option B — download from GitHub releases</span>
+<span class="comment"># https://github.com/rtk-ai/rtk/releases</span>
+<span class="comment"># Download rtk-windows-x86_64.exe → rename to rtk.exe</span>
+<span class="comment"># Add the containing folder to your PATH</span>
+
+<span class="comment"># Verify install:</span>
+<span class="cmd">rtk --version</span>
+<span class="comment"># Expected: rtk 0.42.4</span>
+
+<span class="comment"># Confirm binary location:</span>
+<span class="cmd">where rtk</span>
+<span class="comment"># Expected path ending in \rtk.exe</span></pre>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-title">Name collision — important check</div>
+            <p>There is a different Rust package also called <code>rtk</code> (<code>reachingforthejack/rtk</code> — Rust Type Kit). If <code>rtk gain</code> gives an error or unrecognised command, you have the wrong binary. Run <code>rtk --version</code> — it should print <code>rtk X.Y.Z</code> not anything about types. Uninstall the wrong one first.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step" id="step2">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Add the Claude Code hook (critical step)</div>
+          <div class="step-desc">This is the step that actually activates RTK for Claude Code. Without the hook, RTK is installed but never called. Edit <code>C:\Users\akhileswar.konikinen\.claude\settings.json</code> to add the <code>PreToolUse</code> hook.</div>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">json</span><span class="code-label">~\.claude\settings.json</span></div>
+            <pre>{
+  <span class="kw">"hooks"</span>: {
+    <span class="kw">"PreToolUse"</span>: [
+      {
+        <span class="kw">"matcher"</span>: <span class="val">"Bash"</span>,
+        <span class="kw">"hooks"</span>: [
+          {
+            <span class="kw">"type"</span>: <span class="val">"command"</span>,
+            <span class="kw">"command"</span>: <span class="val">"rtk hook claude"</span>
+          }
+        ]
+      }
+    ]
+  },
+  <span class="kw">"autoUpdatesChannel"</span>: <span class="val">"latest"</span>
+}</pre>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-title">Other config in settings.json</div>
+            <p>Your <code>settings.json</code> also contains <code>extraKnownMarketplaces</code> for Headroom. <strong>Keep all existing content</strong> — just add the <code>hooks</code> block. Replacing the whole file loses your Headroom marketplace config.</p>
+          </div>
+
+          <div class="callout success">
+            <div class="callout-title">How the hook command works</div>
+            <p><code>rtk hook claude</code> is RTK's Claude Code integration mode. It reads the incoming Bash command from Claude's tool-use payload, rewrites it to the appropriate <code>rtk &lt;command&gt;</code> form, and returns the filtered output. RTK knows which filter to apply based on the command name.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step" id="step3">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Verify the installation is working</div>
+          <div class="step-desc">Restart Claude Code after editing settings.json. Run these verification checks — if RTK is working, you should see savings appear immediately.</div>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">powershell</span><span class="code-label">Run in terminal (not inside Claude Code)</span></div>
+            <pre><span class="comment"># 1. RTK binary is reachable</span>
+<span class="cmd">rtk --version</span>
+<span class="comment"># Expected: rtk 0.42.4</span>
+
+<span class="comment"># 2. RTK knows about savings (shows empty if first run)</span>
+<span class="cmd">rtk gain</span>
+
+<span class="comment"># 3. Verify hook integrity</span>
+<span class="cmd">rtk verify</span>
+
+<span class="comment"># 4. Config file location</span>
+<span class="cmd">rtk config</span>
+<span class="comment"># Shows: C:\Users\...\AppData\Roaming\rtk\config.toml</span>
+
+<span class="comment"># 5. After a Claude Code session — check savings appeared:</span>
+<span class="cmd">rtk gain --history</span></pre>
+          </div>
+
+          <div class="callout danger">
+            <div class="callout-title">If rtk gain shows 0 after a full session</div>
+            <p>The hook is not active. Causes: (1) <code>settings.json</code> was not saved correctly — open it and confirm the <code>hooks</code> block is present. (2) Claude Code was not restarted after editing — close and reopen. (3) The hook command has a typo — it must be exactly <code>rtk hook claude</code>.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- KEY COMMANDS -->
+  <section class="section" id="commands">
+    <div class="section-header">
+      <span class="section-num">§ 04</span>
+      <h2>Key Commands</h2>
+    </div>
+
+    <p>These are the RTK meta-commands you run yourself (not through Claude). All other RTK commands run automatically via the hook.</p>
+
+    <div class="cmd-ref">
+      <div class="cmd-ref-header">analytics commands — run these yourself</div>
+      <table>
+        <tr>
+          <td>rtk gain</td>
+          <td>Overall token savings summary — total tokens, saved count, percentage, top commands by impact</td>
+        </tr>
+        <tr>
+          <td>rtk gain --history</td>
+          <td>Per-command breakdown — every individual command with its savings count and average percentage</td>
+        </tr>
+        <tr>
+          <td>rtk session</td>
+          <td>Session-by-session view — shows adoption rate across your last 10 Claude Code sessions</td>
+        </tr>
+        <tr>
+          <td>rtk discover</td>
+          <td>Scans Claude Code history for commands that were NOT routed through RTK — finds missed savings</td>
+        </tr>
+        <tr>
+          <td>rtk verify</td>
+          <td>Checks hook integrity and runs built-in filter inline tests — use after any settings change</td>
+        </tr>
+        <tr>
+          <td>rtk config</td>
+          <td>Shows current configuration and config file path</td>
+        </tr>
+        <tr>
+          <td>rtk telemetry</td>
+          <td>Manage anonymous telemetry consent — currently disabled on this machine</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="cmd-ref">
+      <div class="cmd-ref-header">debug commands — for when something seems wrong</div>
+      <table>
+        <tr>
+          <td>rtk proxy &lt;cmd&gt;</td>
+          <td>Run a command through RTK tracking but <em>without filtering</em> — useful to confirm RTK is seeing commands</td>
+        </tr>
+        <tr>
+          <td>rtk run &lt;cmd&gt;</td>
+          <td>Execute via <code>sh -c</code> completely raw — no filtering, no tracking. Pure passthrough for debugging</td>
+        </tr>
+        <tr>
+          <td>rtk err &lt;cmd&gt;</td>
+          <td>Run command and show <em>only</em> errors and warnings — strips all successful output</td>
+        </tr>
+        <tr>
+          <td>rtk learn</td>
+          <td>Learn CLI corrections from Claude Code error history — helps RTK improve its filters</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- BUILT-IN FILTERS -->
+  <section class="section" id="filters">
+    <div class="section-header">
+      <span class="section-num">§ 05</span>
+      <h2>Built-in Filters</h2>
+    </div>
+
+    <p>RTK has purpose-built filters for each tool. When Claude runs one of these commands, the filter for that tool is applied automatically. Highest-impact filters for this project:</p>
+
+    <div class="cmd-ref">
+      <div class="cmd-ref-header">filters used in this project</div>
+      <table>
+        <tr>
+          <td>rtk read &lt;file&gt;</td>
+          <td>Biggest savings in our project — 45.6K tokens saved. Strips file padding, comments, and repetitive lines. Our #1 most-called filter.</td>
+        </tr>
+        <tr>
+          <td>rtk ls -la &lt;path&gt;</td>
+          <td>Directory listings with noise removed — permissions columns, owner/group, sizing details. Keeps filenames and modification dates.</td>
+        </tr>
+        <tr>
+          <td>rtk git &lt;cmd&gt;</td>
+          <td>Git output with compact formatting — diff headers, status abbreviations, short log format. Strips ASCII decoration.</td>
+        </tr>
+        <tr>
+          <td>rtk npm &lt;cmd&gt;</td>
+          <td>npm install/run output stripped of progress bars, timing lines, and boilerplate. Keeps errors and key outcomes.</td>
+        </tr>
+        <tr>
+          <td>rtk playwright &lt;cmd&gt;</td>
+          <td>Playwright test output showing only failures — skips passing test lines, strips runner decoration.</td>
+        </tr>
+        <tr>
+          <td>rtk curl &lt;url&gt;</td>
+          <td>Auto-detects JSON responses and applies schema-based compression — shows structure, not full payload.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="cmd-ref">
+      <div class="cmd-ref-header">other available filters (full list)</div>
+      <table>
+        <tr><td>rtk tree &lt;path&gt;</td><td>Directory tree with token-optimized output</td></tr>
+        <tr><td>rtk diff &lt;args&gt;</td><td>Ultra-condensed diff — only changed lines, no context bloat</td></tr>
+        <tr><td>rtk grep &lt;args&gt;</td><td>Compact grep — strips whitespace, truncates, groups by file</td></tr>
+        <tr><td>rtk json &lt;file&gt;</td><td>JSON with compact values, or keys-only with --keys-only</td></tr>
+        <tr><td>rtk log &lt;cmd&gt;</td><td>Filter and deduplicate log output — removes repeated lines</td></tr>
+        <tr><td>rtk test &lt;cmd&gt;</td><td>Run tests and show only failures — pass/skip lines suppressed</td></tr>
+        <tr><td>rtk deps</td><td>Summarize project dependencies from package.json</td></tr>
+        <tr><td>rtk env</td><td>Show environment variables with sensitive values masked</td></tr>
+        <tr><td>rtk tsc &lt;args&gt;</td><td>TypeScript compiler with grouped error output</td></tr>
+        <tr><td>rtk docker &lt;cmd&gt;</td><td>Docker commands with compact output</td></tr>
+      </table>
+    </div>
+
+    <div class="callout accent">
+      <div class="callout-title">rtk read is the highest-impact filter</div>
+      <p>In our project, <code>rtk read</code> saved <strong>45.6K of the 49.8K total tokens saved</strong> — that's 91% of all RTK savings from a single filter. Any time Claude reads a file, RTK is working hardest.</p>
+    </div>
+  </section>
+
+  <!-- CHECKING SAVINGS -->
+  <section class="section" id="savings">
+    <div class="section-header">
+      <span class="section-num">§ 06</span>
+      <h2>Checking Savings</h2>
+    </div>
+
+    <p>Run these at the start of a session to confirm RTK is active, or after a session to review how much was saved.</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">powershell</span></div>
+      <pre><span class="comment"># Overall summary — run any time</span>
+<span class="cmd">rtk gain</span>
+
+<span class="comment"># Sample output:</span>
+<span class="comment"># RTK Token Savings (Global Scope)</span>
+<span class="comment"># Total commands:    54</span>
+<span class="comment"># Tokens saved:      49.8K (89.9%)</span>
+<span class="comment"># Efficiency meter: ██████████████████████░░ 89.9%</span>
+
+<span class="comment"># Session-by-session breakdown</span>
+<span class="cmd">rtk session</span>
+
+<span class="comment"># Sample output:</span>
+<span class="comment"># Session    Date     Cmds  RTK  Adoption</span>
+<span class="comment"># f13806de   Today      14    6      43%</span>
+<span class="comment"># 86a4bb41   Today      14   12      86%</span>
+
+<span class="comment"># Find commands that MISSED RTK filtering</span>
+<span class="cmd">rtk discover</span></pre>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-title">Low adoption rate in rtk session</div>
+      <p>If <code>rtk session</code> shows adoption below 50%, RTK is filtering some commands but not all — either the hook isn't matching all Bash calls, or some sessions were started without the hook active. Run <code>rtk discover</code> to identify which command types are being missed.</p>
+    </div>
+  </section>
+
+  <!-- TROUBLESHOOTING -->
+  <section class="section" id="troubleshooting">
+    <div class="section-header">
+      <span class="section-num">§ 07</span>
+      <h2>Troubleshooting</h2>
+    </div>
+
+    <div class="trouble-list">
+
+      <div class="trouble-item">
+        <div class="trouble-head">
+          <span class="trouble-badge error">ERROR</span>
+          <span class="trouble-error-text">'rtk' is not recognized as a command</span>
+        </div>
+        <div class="trouble-body">
+          <div class="cause-label">Root Cause</div>
+          <p style="margin-bottom:12px">RTK binary exists but is not in your PATH, or the install directory was not added.</p>
+          <div class="code-block"><div class="code-header"><span class="code-lang">fix</span></div>
+            <pre><span class="comment"># Find where rtk was installed</span>
+<span class="cmd">where rtk</span>
+<span class="comment"># If this also fails, rtk is not installed</span>
+
+<span class="comment"># On this machine, the binary is at:</span>
+<span class="comment"># C:\Users\akhileswar.konikinen\AppData\Local\Programs\rtk\rtk.exe</span>
+<span class="comment"># Add that directory to System PATH</span>
+<span class="comment"># Settings → System → Advanced → Environment Variables → PATH</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-head">
+          <span class="trouble-badge warn">WARN</span>
+          <span class="trouble-error-text">rtk gain shows 0 savings after a full Claude session</span>
+        </div>
+        <div class="trouble-body">
+          <div class="cause-label">Root Cause</div>
+          <p style="margin-bottom:12px">The PreToolUse hook is not active. RTK is installed but Claude Code is running Bash commands without going through RTK.</p>
+          <div class="code-block"><div class="code-header"><span class="code-lang">fix</span></div>
+            <pre><span class="comment"># 1. Check settings.json has the hooks block</span>
+<span class="cmd">notepad %USERPROFILE%\.claude\settings.json</span>
+<span class="comment"># Must contain "hooks" → "PreToolUse" → "rtk hook claude"</span>
+
+<span class="comment"># 2. Restart Claude Code — hooks are read at startup</span>
+
+<span class="comment"># 3. Verify hook integrity</span>
+<span class="cmd">rtk verify</span>
+
+<span class="comment"># 4. If still 0, check for typo in hook command:</span>
+<span class="comment"># Correct:   "command": "rtk hook claude"</span>
+<span class="comment"># Wrong:     "command": "rtk hook" (missing "claude")</span>
+<span class="comment"># Wrong:     "command": "rtk" (missing "hook claude")</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-head">
+          <span class="trouble-badge error">ERROR</span>
+          <span class="trouble-error-text">rtk gain fails or returns wrong output (wrong rtk installed)</span>
+        </div>
+        <div class="trouble-body">
+          <div class="cause-label">Root Cause</div>
+          <p style="margin-bottom:12px">The wrong <code>rtk</code> binary is installed — <code>reachingforthejack/rtk</code> (Rust Type Kit) rather than <code>rtk-ai/rtk</code>. Both have the same binary name.</p>
+          <div class="code-block"><div class="code-header"><span class="code-lang">fix</span></div>
+            <pre><span class="comment"># Identify which rtk you have:</span>
+<span class="cmd">rtk --version</span>
+<span class="comment"># Should print:  rtk X.Y.Z  (rtk-ai version)</span>
+<span class="comment"># Wrong version: any output about "Rust Type Kit" or types</span>
+
+<span class="comment"># If wrong: uninstall it first, then reinstall rtk-ai/rtk</span>
+<span class="comment"># Check installed programs and remove the conflicting one</span>
+<span class="comment"># Then reinstall from: https://github.com/rtk-ai/rtk/releases</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-head">
+          <span class="trouble-badge warn">WARN</span>
+          <span class="trouble-error-text">RTK session shows low adoption (below 50%)</span>
+        </div>
+        <div class="trouble-body">
+          <div class="cause-label">Root Cause</div>
+          <p style="margin-bottom:12px">Some Bash commands are not being intercepted by the hook. This can happen if commands are run in subshells, or if certain Claude tool types bypass Bash.</p>
+          <div class="code-block"><div class="code-header"><span class="code-lang">fix</span></div>
+            <pre><span class="comment"># Find exactly which commands are being missed</span>
+<span class="cmd">rtk discover</span>
+
+<span class="comment"># Review session-level adoption</span>
+<span class="cmd">rtk session</span>
+
+<span class="comment"># For commands RTK doesn't have a filter for,</span>
+<span class="comment"># use rtk proxy to at least track them:</span>
+<span class="cmd">rtk proxy &lt;your-command&gt;</span></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- QUICK REF -->
+  <section class="section" id="quickref">
+    <div class="section-header">
+      <span class="section-num">§ 08</span>
+      <h2>Quick Reference</h2>
+    </div>
+
+    <div class="quick-ref">
+      <div class="quick-ref-header">daily commands — run yourself</div>
+      <table>
+        <tr><td>rtk gain</td><td>Token savings summary — run at start/end of session to confirm RTK is working</td></tr>
+        <tr><td>rtk gain --history</td><td>Per-command breakdown — see which commands saved the most</td></tr>
+        <tr><td>rtk session</td><td>Session adoption rate — should be 80%+ if hook is active</td></tr>
+        <tr><td>rtk discover</td><td>Find missed savings opportunities from session history</td></tr>
+        <tr><td>rtk verify</td><td>Check hook integrity after any settings change</td></tr>
+      </table>
+    </div>
+
+    <div class="quick-ref">
+      <div class="quick-ref-header">configuration</div>
+      <table>
+        <tr><td>Hook config location</td><td>C:\Users\akhileswar.konikinen\.claude\settings.json</td></tr>
+        <tr><td>Hook command</td><td>"command": "rtk hook claude" under PreToolUse → Bash matcher</td></tr>
+        <tr><td>RTK binary location</td><td>C:\Users\akhileswar.konikinen\AppData\Local\Programs\rtk\rtk.exe</td></tr>
+        <tr><td>RTK config file</td><td>C:\Users\akhileswar.konikinen\AppData\Roaming\rtk\config.toml</td></tr>
+        <tr><td>GitHub repo</td><td>https://github.com/rtk-ai/rtk (correct one, not reachingforthejack/rtk)</td></tr>
+      </table>
+    </div>
+
+    <div class="quick-ref">
+      <div class="quick-ref-header">important notes</div>
+      <table>
+        <tr><td>Hook is global</td><td>Configured once in ~/.claude/settings.json — applies to all projects automatically</td></tr>
+        <tr><td>No startup needed</td><td>Unlike Headroom, RTK needs no proxy started — the hook calls the binary directly</td></tr>
+        <tr><td>Restart required</td><td>After editing settings.json, restart Claude Code for hook changes to take effect</td></tr>
+        <tr><td>Name collision risk</td><td>Always verify rtk --version shows rtk-ai version, not Rust Type Kit</td></tr>
+      </table>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  const links = document.querySelectorAll('.nav-link[href^="#"]');
+  const sections = [];
+  links.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ el, link });
+  });
+  function updateActive() {
+    let current = sections[0];
+    sections.forEach(s => { if (s.el.getBoundingClientRect().top <= 110) current = s; });
+    links.forEach(l => l.classList.remove('active'));
+    if (current) current.link.classList.add('active');
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+</script>

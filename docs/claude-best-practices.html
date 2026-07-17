@@ -1,0 +1,928 @@
+<title>Claude Code Best Practices — RTK + Headroom + QA Pipeline</title>
+<meta name="description" content="Practical best practices for Claude Code using RTK, Headroom, QA_PIPELINE.md, and DB_VALIDATION.md — based on real project usage.">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #0A0E1A;
+    --surface:     #131829;
+    --surface-2:   #1A2035;
+    --border:      #252D4A;
+    --border-2:    #1E2640;
+    --accent:      #F0C040;
+    --accent-dim:  #9C7D1A;
+    --blue:        #4F9EF8;
+    --green:       #3DD68C;
+    --red:         #EF5959;
+    --purple:      #A98EF0;
+    --rtk:         #7EC44A;
+    --text:        #DDE2F0;
+    --text-muted:  #7A84A8;
+    --text-faint:  #434B6E;
+    --code-bg:     #080C16;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 52px 64px 44px;
+  }
+
+  .header-inner { max-width: 1100px; margin: 0 auto; }
+
+  .eyebrow {
+    font-family: Consolas, monospace;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px;
+  }
+
+  .page-title {
+    font-size: 36px; font-weight: 800;
+    color: var(--text); line-height: 1.15;
+    text-wrap: balance; margin-bottom: 14px;
+  }
+
+  .page-title span { color: var(--accent); }
+
+  .page-subtitle {
+    font-size: 16px; color: var(--text-muted);
+    max-width: 62ch; line-height: 1.65; margin-bottom: 24px;
+  }
+
+  .header-tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  .tool-chip {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 5px 12px;
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-gold   { background: var(--accent); }
+  .dot-blue   { background: var(--blue); }
+  .dot-green  { background: var(--rtk); }
+  .dot-purple { background: var(--purple); }
+
+  /* ── STAT BAR ── */
+  .stat-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; margin: 36px 0 0;
+  }
+
+  .stat { background: var(--surface); padding: 18px 24px; text-align: center; }
+
+  .stat-num {
+    font-size: 28px; font-weight: 800; color: var(--accent);
+    font-family: Consolas, monospace; line-height: 1;
+    margin-bottom: 5px; font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label { font-size: 12px; color: var(--text-muted); }
+
+  /* ── CONTENT ── */
+  .content { max-width: 1100px; margin: 0 auto; padding: 0 64px 80px; }
+
+  /* ── CATEGORY ── */
+  .category { margin-top: 56px; }
+
+  .category-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cat-icon {
+    width: 36px; height: 36px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+
+  .cat-icon.gold   { background: rgba(240,192,64,0.12); border: 1px solid rgba(240,192,64,0.25); color: var(--accent); }
+  .cat-icon.blue   { background: rgba(79,158,248,0.12); border: 1px solid rgba(79,158,248,0.25); color: var(--blue); }
+  .cat-icon.green  { background: rgba(126,196,74,0.1);  border: 1px solid rgba(126,196,74,0.25); color: var(--rtk); }
+  .cat-icon.purple { background: rgba(169,142,240,0.1); border: 1px solid rgba(169,142,240,0.25); color: var(--purple); }
+  .cat-icon.red    { background: rgba(239,89,89,0.1);   border: 1px solid rgba(239,89,89,0.25);   color: var(--red); }
+
+  .cat-meta { flex: 1; }
+  .cat-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .cat-desc  { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .cat-count { font-family: Consolas, monospace; font-size: 11px; color: var(--text-faint); letter-spacing: 0.06em; flex-shrink: 0; }
+
+  /* ── PRACTICE GRID ── */
+  .practice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+
+  .card-head {
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--border-2);
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+
+  .practice-num {
+    font-family: Consolas, monospace; font-size: 10px;
+    letter-spacing: 0.06em; color: var(--text-faint);
+    flex-shrink: 0; padding-top: 3px;
+  }
+
+  .card-title-wrap { flex: 1; }
+
+  .card-title {
+    font-size: 14px; font-weight: 700;
+    color: var(--text); line-height: 1.3; text-wrap: balance;
+  }
+
+  .card-tag {
+    display: inline-block;
+    font-family: Consolas, monospace; font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 2px; margin-top: 5px;
+  }
+
+  .tag-gold   { background: rgba(240,192,64,0.12); color: var(--accent); border: 1px solid rgba(240,192,64,0.2); }
+  .tag-blue   { background: rgba(79,158,248,0.1);  color: var(--blue);   border: 1px solid rgba(79,158,248,0.2); }
+  .tag-green  { background: rgba(126,196,74,0.1);  color: var(--rtk);    border: 1px solid rgba(126,196,74,0.2); }
+  .tag-purple { background: rgba(169,142,240,0.1); color: var(--purple); border: 1px solid rgba(169,142,240,0.2); }
+  .tag-red    { background: rgba(239,89,89,0.1);   color: var(--red);    border: 1px solid rgba(239,89,89,0.2); }
+
+  .card-body { padding: 16px 20px; }
+  .card-body p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.65; }
+  .card-body p:last-child { margin-bottom: 0; }
+  .card-body strong { color: var(--text); }
+
+  /* ── CODE ── */
+  .mini-code {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 5px; padding: 11px 14px; margin: 10px 0;
+    overflow-x: auto;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 12px; line-height: 1.7; color: var(--text);
+  }
+
+  .mini-code .c  { color: var(--text-faint); }
+  .mini-code .b  { color: #7EC8E3; }
+  .mini-code .g  { color: var(--green); }
+  .mini-code .y  { color: var(--accent); }
+  .mini-code .p  { color: var(--purple); }
+  .mini-code .r  { color: var(--rtk); }
+
+  code {
+    font-family: Consolas, monospace; font-size: 12px;
+    background: var(--code-bg); border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px; color: #7EC8E3;
+  }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-left: 3px solid; border-radius: 0 5px 5px 0;
+    padding: 11px 14px; margin: 10px 0;
+    background: var(--surface-2);
+    font-size: 13px; color: var(--text-muted);
+  }
+
+  .callout.gold   { border-color: var(--accent); }
+  .callout.green  { border-color: var(--green); }
+  .callout.blue   { border-color: var(--blue); }
+  .callout strong { color: var(--text); }
+
+  /* ── DO/DON'T ── */
+  .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+
+  .do-list, .dont-list {
+    background: var(--code-bg); border-radius: 5px; padding: 12px 14px;
+  }
+
+  .do-list   { border: 1px solid rgba(61,214,140,0.2); }
+  .dont-list { border: 1px solid rgba(239,89,89,0.2); }
+
+  .list-head {
+    font-family: Consolas, monospace; font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 8px; font-weight: 700;
+  }
+
+  .do-list   .list-head { color: var(--green); }
+  .dont-list .list-head { color: var(--red); }
+
+  .dd-item {
+    font-size: 12px; color: var(--text-muted); padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 7px;
+    line-height: 1.45; border-bottom: 1px solid var(--border-2);
+  }
+
+  .dd-item:last-child { border-bottom: none; }
+  .dd-item .mark { flex-shrink: 0; font-size: 11px; margin-top: 1px; }
+  .do-list   .mark { color: var(--green); }
+  .dont-list .mark { color: var(--red); }
+
+  /* ── TWO-COL BODY ── */
+  .two-col-body {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px; padding: 16px 20px;
+  }
+
+  .col-section h4 {
+    font-size: 12px; font-weight: 700; color: var(--text-muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 10px; font-family: Consolas, monospace;
+  }
+
+  /* ── FLOW ── */
+  .flow { display: flex; flex-direction: column; gap: 0; margin: 10px 0; }
+
+  .flow-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid var(--border-2);
+  }
+
+  .flow-item:last-child { border-bottom: none; }
+
+  .flow-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(240,192,64,0.12); border: 1px solid rgba(240,192,64,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-family: Consolas, monospace; font-size: 10px;
+    color: var(--accent); flex-shrink: 0; margin-top: 2px;
+  }
+
+  .flow-text { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+  .flow-text strong { color: var(--text); }
+
+  /* ── RULE LIST ── */
+  .rule-list { list-style: none; display: flex; flex-direction: column; gap: 4px; margin: 8px 0; }
+
+  .rule-list li {
+    font-size: 12.5px; color: var(--text-muted);
+    padding: 5px 10px; background: var(--surface-2);
+    border-radius: 4px; display: flex;
+    align-items: flex-start; gap: 8px; line-height: 1.45;
+  }
+
+  .rule-list li::before {
+    content: '—'; color: var(--text-faint);
+    flex-shrink: 0; font-size: 11px; margin-top: 1px;
+  }
+
+  /* ── SAVINGS ROW ── */
+  .savings-row { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+
+  .savings-item {
+    flex: 1; min-width: 120px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 14px; text-align: center;
+  }
+
+  .savings-num {
+    font-family: Consolas, monospace; font-size: 22px; font-weight: 700;
+    color: var(--accent); line-height: 1; margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .savings-label { font-size: 11px; color: var(--text-muted); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .page-header, .content { padding-left: 24px; padding-right: 24px; }
+    .practice-grid { grid-template-columns: 1fr; }
+    .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    .do-dont, .two-col-body { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="header-inner">
+    <div class="eyebrow">Claude Code · Field Guide</div>
+    <h1 class="page-title">Best Practices for <span>Claude Code</span></h1>
+    <p class="page-subtitle">Every technique we use daily — token optimization with RTK and Headroom, context management with QA_PIPELINE.md and DB_VALIDATION.md, MCP agents, and session reliability.</p>
+    <div class="header-tools">
+      <div class="tool-chip"><span class="dot dot-green"></span> RTK · Token Killer</div>
+      <div class="tool-chip"><span class="dot dot-blue"></span> Headroom · Context Compression</div>
+      <div class="tool-chip"><span class="dot dot-purple"></span> MCP Browser Agents</div>
+      <div class="tool-chip"><span class="dot dot-gold"></span> QA_PIPELINE.md + DB_VALIDATION.md</div>
+    </div>
+
+    <div class="stat-bar">
+      <div class="stat">
+        <div class="stat-num">89.9%</div>
+        <div class="stat-label">RTK token savings achieved on shell commands (49.8K of 55.3K tokens)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Context files in use — QA_PIPELINE.md and DB_VALIDATION.md</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">MCP agents — planner, generator, healer</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1</div>
+        <div class="stat-label">Config change needed per module — TARGET_MODULE in QA_PIPELINE</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- ═══ CATEGORY 1: TOKEN OPTIMIZATION ═══ -->
+  <section class="category" id="tokens">
+    <div class="category-header">
+      <div class="cat-icon green">⚡</div>
+      <div class="cat-meta">
+        <div class="cat-title">Token Optimization</div>
+        <div class="cat-desc">RTK and Headroom operate at different layers. RTK filters shell command output. Headroom compresses LLM conversation context. Use both together.</div>
+      </div>
+      <span class="cat-count">5 practices</span>
+    </div>
+
+    <div class="practice-grid">
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P01</span>
+          <div class="card-title-wrap">
+            <div class="card-title">RTK works automatically via the Claude Code hook — never manually</div>
+            <span class="card-tag tag-green">RTK · Always On</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>RTK is wired into Claude Code as a <strong>PreToolUse hook</strong> in <code>~/.claude/settings.json</code>. Every Bash command Claude runs is automatically intercepted and rewritten to <code>rtk &lt;command&gt;</code>. You do not prefix commands yourself.</p>
+          <div class="mini-code"><span class="c"># What the hook does silently:</span>
+<span class="c"># git status      → rtk git status</span>
+<span class="c"># npm install     → rtk npm install</span>
+<span class="c"># ls -la          → rtk ls -la</span>
+
+<span class="c"># Check your savings any time:</span>
+<span class="r">rtk gain</span>                <span class="c"># overall summary</span>
+<span class="r">rtk gain --history</span>      <span class="c"># per-command breakdown</span>
+<span class="r">rtk session</span>             <span class="c"># adoption rate per session</span></div>
+          <p>The only commands you run yourself are analytics (<code>rtk gain</code>, <code>rtk discover</code>, <code>rtk session</code>) and debug commands (<code>rtk verify</code>).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P02</span>
+          <div class="card-title-wrap">
+            <div class="card-title">The hook config in settings.json is what activates RTK</div>
+            <span class="card-tag tag-green">RTK · Configuration</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Installing RTK is not enough. Without the <code>PreToolUse</code> hook in <code>settings.json</code>, RTK is installed but completely idle. The hook is the activation step — verify it first whenever savings look wrong.</p>
+          <div class="mini-code"><span class="c"># ~/.claude/settings.json</span>
+{
+  <span class="y">"hooks"</span>: {
+    <span class="y">"PreToolUse"</span>: [{
+      <span class="y">"matcher"</span>: <span class="g">"Bash"</span>,
+      <span class="y">"hooks"</span>: [{
+        <span class="y">"type"</span>: <span class="g">"command"</span>,
+        <span class="y">"command"</span>: <span class="g">"rtk hook claude"</span>
+      }]
+    }]
+  },
+  <span class="y">"autoUpdatesChannel"</span>: <span class="g">"latest"</span>,
+  <span class="y">"extraKnownMarketplaces"</span>: { <span class="c">... headroom config ...</span> }
+}</div>
+          <p>Restart Claude Code after any change to <code>settings.json</code> — hooks are loaded at startup.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P03</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Start Headroom proxy before every Claude session</div>
+            <span class="card-tag tag-blue">Headroom · Critical</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Headroom is <strong>not a background service</strong>. It must be manually started each session before launching Claude Code. Forgetting this is the root cause of every <code>Connection Refused</code> error we've hit.</p>
+          <div class="mini-code"><span class="c"># Terminal 1 — keep this open the whole session</span>
+<span class="b">headroom proxy</span>
+
+<span class="c"># Terminal 2 — your working terminal</span>
+<span class="p">$env:ANTHROPIC_BASE_URL</span> = <span class="g">"http://localhost:8787"</span>
+<span class="b">claude</span>
+
+<span class="c"># Or both in one command:</span>
+<span class="b">headroom wrap claude</span></div>
+          <div class="callout blue">
+            <strong>Quick confirm:</strong> <code>curl http://localhost:8787/health</code> — if you get JSON, proxy is up. If Connection Refused, it's not started yet.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P04</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Make ANTHROPIC_BASE_URL permanent in PowerShell profile</div>
+            <span class="card-tag tag-blue">Headroom · Setup</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Setting <code>$env:ANTHROPIC_BASE_URL</code> in a terminal only lasts that session. Add it to your PowerShell profile so it's always present — then you only need to start the proxy, not re-set the variable each time.</p>
+          <div class="mini-code"><span class="c"># Open your PowerShell profile:</span>
+<span class="b">notepad $PROFILE</span>
+
+<span class="c"># Add this line and save:</span>
+<span class="p">$env:ANTHROPIC_BASE_URL</span> = <span class="g">"http://localhost:8787"</span>
+
+<span class="c"># Verify it's set in a new terminal:</span>
+<span class="b">echo $env:ANTHROPIC_BASE_URL</span>
+<span class="c"># Expected: http://localhost:8787</span></div>
+          <div class="callout gold">
+            <strong>Important:</strong> If you add this to your profile but forget to start the proxy, every Claude Code launch will fail with Connection Refused. Start proxy first, always.
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-head">
+          <span class="practice-num">P05</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Verify both tools are actively saving tokens — don't assume</div>
+            <span class="card-tag tag-gold">Both Tools · Verification</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Both RTK and Headroom can appear working while silently doing nothing — a missing hook, an unset env var, a stopped proxy. Check savings at the start of important sessions.</p>
+          <div class="two-col-body" style="padding:0; gap:16px;">
+            <div>
+              <div class="mini-code"><span class="c"># RTK — verify savings</span>
+<span class="r">rtk gain</span>
+<span class="c"># Tokens saved: 49.8K (89.9%)</span>
+<span class="c"># If 0 → hook is not active</span>
+
+<span class="r">rtk discover</span>
+<span class="c"># Find missed opportunities</span></div>
+            </div>
+            <div>
+              <div class="mini-code"><span class="c"># Headroom — verify savings</span>
+<span class="b">curl http://localhost:8787/stats</span>
+<span class="c"># tokens_saved_total should increase</span>
+<span class="c"># If 0 → ANTHROPIC_BASE_URL not set</span>
+<span class="c">#   or proxy not running</span></div>
+            </div>
+          </div>
+          <div class="savings-row">
+            <div class="savings-item"><div class="savings-num">89.9%</div><div class="savings-label">RTK savings on shell commands</div></div>
+            <div class="savings-item"><div class="savings-num">50–90%</div><div class="savings-label">Headroom savings on LLM context</div></div>
+            <div class="savings-item"><div class="savings-num">0%</div><div class="savings-label">If either tool is misconfigured</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ CATEGORY 2: CONTEXT FILES ═══ -->
+  <section class="category" id="context">
+    <div class="category-header">
+      <div class="cat-icon gold">◈</div>
+      <div class="cat-meta">
+        <div class="cat-title">Context Files — QA_PIPELINE.md & DB_VALIDATION.md</div>
+        <div class="cat-desc">Two files carry all the context needed across every session. Understanding each file's role is how you avoid repeating yourself to Claude.</div>
+      </div>
+      <span class="cat-count">3 practices</span>
+    </div>
+
+    <div class="practice-grid">
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P06</span>
+          <div class="card-title-wrap">
+            <div class="card-title">QA_PIPELINE.md is the only file you change between sessions</div>
+            <span class="card-tag tag-gold">Context · QA_PIPELINE</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>QA_PIPELINE.md has one CONFIG block at the top. That is the <strong>only part that changes</strong> between modules. The rest — phases, steps, agent instructions, output format — stays exactly the same every time.</p>
+          <div class="mini-code"><span class="c"># QA_PIPELINE.md — change ONLY this block</span>
+```
+TARGET_MODULE   : Data Centre       <span class="c">← only this</span>
+APP_URL         : https://portal... <span class="c">← stays same</span>
+ENVIRONMENT     : QAN               <span class="c">← stays same</span>
+FULL_USER       : statususer        <span class="c">← stays same</span>
+FULL_PASSWORD   : Password#1        <span class="c">← stays same</span>
+RESTRICTED_USER : &lt;restricted&gt;      <span class="c">← per-module</span>
+```</div>
+          <p>Switching from DataCentre to ProviderTariff takes <strong>one line change</strong>. No re-explaining the methodology, no re-writing instructions. Claude reads the file and knows the full pipeline.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P07</span>
+          <div class="card-title-wrap">
+            <div class="card-title">DB_VALIDATION.md is for Phase 2 onwards — planner doesn't need it</div>
+            <span class="card-tag tag-gold">Context · DB_VALIDATION</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>DB_VALIDATION.md stores the verified schema, column names, and reusable SQL queries for each module. The planner agent (Phase 1) discovers structure live from the UI — it does not need this file. The generator and test scripts (Phase 2+) reference it for DB assertions.</p>
+          <div class="mini-code"><span class="c"># What DB_VALIDATION.md provides:</span>
+<span class="c"># - oncilla schema: user, userPermission,</span>
+<span class="c">#   dataCentreDefinition, ipPool, etc.</span>
+<span class="c"># - Column names verified against live DB</span>
+<span class="c"># - Connection helper pattern (dbUtils.js)</span>
+<span class="c"># - Status values: 'active'|'inactive'|'deleted'</span>
+<span class="c">#   (NOT 'state' — that was a real bug we caught)</span>
+
+<span class="c"># .env keys used by DB scripts:</span>
+<span class="g">QA_DB_HOST, QA_DB_USER, QA_DB_PASSWORD, QA_DB_NAME</span></div>
+          <div class="callout gold">
+            <strong>Why it exists:</strong> Without DB_VALIDATION.md, Claude would have to re-discover column names and table structure each session — and risk using wrong column names that silently pass queries but return wrong data.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P08</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Compress context files when they grow — without losing behavior</div>
+            <span class="card-tag tag-gold">Context · Optimization</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>QA_PIPELINE.md grew through iteration — sections added over multiple sessions. We used a structured refactoring instruction to compress it without losing a single rule or workflow. Use the same pattern when any context file becomes bulky.</p>
+          <div class="mini-code"><span class="c"># Paste before the file when asking Claude to compress:</span>
+Treat this as a refactoring exercise, not a rewrite.
+Remove duplicated instructions, merge overlapping
+sections, compress verbose wording. Replace repeated
+paragraphs with reusable rules.
+
+Before returning: verify no rule was removed,
+no capability lost, no workflow changed,
+no output format changed.</div>
+          <div class="callout green">
+            <strong>When to do it:</strong> When QA_PIPELINE.md or DB_VALIDATION.md has grown through repeated additions and sections feel repetitive. Smaller context files = fewer tokens consumed every time Claude reads them.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ CATEGORY 3: PROMPT PRACTICES ═══ -->
+  <section class="category" id="prompts">
+    <div class="category-header">
+      <div class="cat-icon purple">✦</div>
+      <div class="cat-meta">
+        <div class="cat-title">Prompt Practices</div>
+        <div class="cat-desc">How you phrase instructions and constraints in QA_PIPELINE.md directly determines output quality across every module.</div>
+      </div>
+      <span class="cat-count">2 practices</span>
+    </div>
+
+    <div class="practice-grid">
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P09</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Pair "you must" rules with explicit "you must not" rules</div>
+            <span class="card-tag tag-purple">Prompt · Constraints</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>QA_PIPELINE.md uses both patterns throughout. Positive rules tell Claude what to do. Negative rules prevent reasonable-looking shortcuts that break your intent — especially critical in exploratory testing where "close enough" is a failure.</p>
+          <div class="mini-code"><span class="c"># Positive rule — what to do:</span>
+You must click every reachable menu.
+You must interact with all forms.
+
+<span class="c"># Negative rule — what to avoid:</span>
+You must not skip sections.
+You must not ignore disabled fields.
+You must not stop after happy-path.
+You must not assume functionality
+  without evidence from the live UI.</div>
+          <p>When you add new business logic to QA_PIPELINE.md, pair every new <code>must</code> with a corresponding <code>must not</code> for the likely shortcut.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P10</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Add business rules to QA_PIPELINE.md as explicit sections, not prose</div>
+            <span class="card-tag tag-purple">Prompt · Structure</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Business logic like status transition rules, billing validation, and dialog behavior was added to QA_PIPELINE.md as <strong>numbered sections with explicit states</strong> — not as conversational descriptions. Claude follows structured rules more reliably than paragraphs.</p>
+          <div class="do-dont">
+            <div class="do-list">
+              <div class="list-head">Do this (structured)</div>
+              <div class="dd-item"><span class="mark">✓</span> setup → requested: needs Update permission</div>
+              <div class="dd-item"><span class="mark">✓</span> setup → active: needs Approver or Admin</div>
+              <div class="dd-item"><span class="mark">✓</span> setup → deleted: needs Admin</div>
+              <div class="dd-item"><span class="mark">✓</span> Dialog: "Are you sure you want to change…"</div>
+            </div>
+            <div class="dont-list">
+              <div class="list-head">Avoid (prose)</div>
+              <div class="dd-item"><span class="mark">✗</span> "Users can change status depending on their role and the current state of the record…"</div>
+              <div class="dd-item"><span class="mark">✗</span> Mixing multiple rules into one sentence</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ CATEGORY 4: MCP AGENTS ═══ -->
+  <section class="category" id="mcp">
+    <div class="category-header">
+      <div class="cat-icon blue">⬡</div>
+      <div class="cat-meta">
+        <div class="cat-title">MCP Agents</div>
+        <div class="cat-desc">Three agents, three phases. Picking the wrong one for the wrong phase wastes the whole session.</div>
+      </div>
+      <span class="cat-count">2 practices</span>
+    </div>
+
+    <div class="practice-grid">
+
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-head">
+          <span class="practice-num">P11</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Use the right agent for each phase — in order</div>
+            <span class="card-tag tag-blue">MCP · Agent Sequence</span>
+          </div>
+        </div>
+        <div class="two-col-body">
+          <div>
+            <h4>Phase sequence</h4>
+            <div class="flow">
+              <div class="flow-item">
+                <div class="flow-num">1</div>
+                <div class="flow-text"><strong>playwright-test-planner</strong><br>Navigates live app with FULL_USER, discovers all UI elements, saves test plan. Must run first — generator reads its output.</div>
+              </div>
+              <div class="flow-item">
+                <div class="flow-num">2</div>
+                <div class="flow-text"><strong>playwright-test-generator</strong><br>Reads the saved plan, executes each step in browser, writes test files. Only invoke after planner has saved the plan.</div>
+              </div>
+              <div class="flow-item">
+                <div class="flow-num">3</div>
+                <div class="flow-text"><strong>playwright-test-healer</strong><br>Runs failing tests, reads error output, fixes locators and assertions. Only invoke after tests have been run and failed.</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4>Common mistakes</h4>
+            <div class="dont-list" style="border-radius:5px;">
+              <div class="list-head">Never do these</div>
+              <div class="dd-item"><span class="mark">✗</span> Running generator before planner saves the plan</div>
+              <div class="dd-item"><span class="mark">✗</span> Using RESTRICTED_USER for Phase 1 — create button and other controlled elements stay hidden</div>
+              <div class="dd-item"><span class="mark">✗</span> Invoking healer without running tests first</div>
+              <div class="dd-item"><span class="mark">✗</span> Running planner without confirming all permissions are active in DB</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P12</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Phase 1 requires all capabilities active — verify in DB first</div>
+            <span class="card-tag tag-blue">MCP · Permissions</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>If any capability is missing for the target module when the planner runs, that UI element is hidden — the planner can't discover or generate scenarios for it. Always check permissions in DB before starting Phase 1.</p>
+          <div class="mini-code"><span class="c"># DB check before Phase 1 — verify all active</span>
+<span class="b">SELECT title, status FROM oncilla.userPermission</span>
+<span class="b">WHERE username = 'statususer'</span>
+<span class="b">  AND title LIKE 'capabilityDataCentre%';</span>
+<span class="c"># All rows must show status = 'active'</span>
+<span class="c"># Use DB_VALIDATION.md for correct column names</span></div>
+          <ul class="rule-list">
+            <li>Negative permission tests use a RESTRICTED_USER — a separate account or same account with capabilities temporarily set to inactive in DB</li>
+            <li>Status column in <code>oncilla.userPermission</code> is <code>status</code>, not <code>state</code> — DB_VALIDATION.md has the verified column names</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P13</span>
+          <div class="card-title-wrap">
+            <div class="card-title">If MCP shows Disconnected — check proxy, then reload VSCode</div>
+            <span class="card-tag tag-blue">MCP · Troubleshooting</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>When the headroom MCP server shows Disconnected in VSCode, the most likely cause is the proxy not running — not a config problem.</p>
+          <div class="mini-code"><span class="c"># Step 1: Start the proxy if not running</span>
+<span class="b">headroom proxy</span>
+
+<span class="c"># Step 2: Reload VSCode window to force reconnect</span>
+<span class="c"># Ctrl+Shift+P → Developer: Reload Window</span>
+
+<span class="c"># Step 3: If still disconnected, check mcp.json env:</span>
+<span class="c"># .vscode/mcp.json → "headroom" server must have:</span>
+<span class="c"># "env": { "HEADROOM_PROXY_URL": "http://127.0.0.1:8787" }</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ CATEGORY 5: SESSION ═══ -->
+  <section class="category" id="session">
+    <div class="category-header">
+      <div class="cat-icon red">◉</div>
+      <div class="cat-meta">
+        <div class="cat-title">Session Reliability</div>
+        <div class="cat-desc">A fast diagnostic habit cuts hours of lost time from connection errors to minutes. Always follow the same startup order.</div>
+      </div>
+      <span class="cat-count">3 practices</span>
+    </div>
+
+    <div class="practice-grid">
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P14</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Always follow the same 4-step startup sequence</div>
+            <span class="card-tag tag-red">Session · Reliability</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p><code>Connection Refused</code> appeared multiple times because the startup sequence was wrong or skipped. Following the same order every session prevents it entirely.</p>
+          <div class="flow">
+            <div class="flow-item"><div class="flow-num">1</div><div class="flow-text"><strong>Start Headroom proxy</strong> — <code>headroom proxy</code> in a dedicated terminal. Wait for "Uvicorn running on http://127.0.0.1:8787"</div></div>
+            <div class="flow-item"><div class="flow-num">2</div><div class="flow-text"><strong>Confirm proxy health</strong> — <code>curl http://localhost:8787/health</code> returns JSON</div></div>
+            <div class="flow-item"><div class="flow-num">3</div><div class="flow-text"><strong>Open working terminal</strong> — confirm <code>$env:ANTHROPIC_BASE_URL</code> is set to <code>http://localhost:8787</code></div></div>
+            <div class="flow-item"><div class="flow-num">4</div><div class="flow-text"><strong>Launch Claude Code</strong> — <code>claude</code>. Use <code>claude auth status</code> if auth is in doubt</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P15</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Use a diagnostic sequence for API errors — don't guess</div>
+            <span class="card-tag tag-red">Session · Troubleshooting</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>When Claude shows <code>Unable to connect to API</code>, run these checks in order. Stop when you find the cause. Don't reinstall, don't restart VSCode first.</p>
+          <div class="mini-code"><span class="c"># Step 1: Is the proxy running?</span>
+<span class="b">curl http://localhost:8787/health</span>
+
+<span class="c"># Step 2: Is the env var set?</span>
+<span class="b">echo $env:ANTHROPIC_BASE_URL</span>
+
+<span class="c"># Step 3: Is Claude authenticated?</span>
+<span class="b">claude auth status</span>
+
+<span class="c"># Step 4: Can you reach Anthropic directly?</span>
+<span class="b">curl -I https://api.anthropic.com</span>
+
+<span class="c"># Step 5: Verbose output</span>
+<span class="b">claude --debug "Hello"</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-head">
+          <span class="practice-num">P16</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Proxy problems and auth problems look identical — check proxy first</div>
+            <span class="card-tag tag-red">Session · Diagnosis</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Both produce "Unable to connect to API" but have completely different fixes. Misdiagnosing costs significant time. Based on our history, proxy problems are far more frequent.</p>
+          <div class="two-col-body" style="padding:0; gap:16px;">
+            <div>
+              <div class="do-list" style="border-radius:5px; border-color:rgba(79,158,248,0.3);">
+                <div class="list-head" style="color:var(--blue);">Proxy problem (most common)</div>
+                <div class="dd-item" style="color:var(--text-muted);"><span class="mark" style="color:var(--blue)">•</span> Error on any Claude command, immediately</div>
+                <div class="dd-item" style="color:var(--text-muted);"><span class="mark" style="color:var(--blue)">•</span> <code>curl localhost:8787/health</code> → Connection Refused</div>
+                <div class="dd-item" style="color:var(--text-muted);"><span class="mark" style="color:var(--blue)">•</span> Fix: <code>headroom proxy</code> in a new terminal</div>
+              </div>
+            </div>
+            <div>
+              <div class="dont-list" style="border-radius:5px;">
+                <div class="list-head">Auth problem (less common)</div>
+                <div class="dd-item"><span class="mark">•</span> Error persists even without Headroom proxy</div>
+                <div class="dd-item"><span class="mark">•</span> <code>claude auth status</code> shows not logged in</div>
+                <div class="dd-item"><span class="mark">•</span> Fix: <code>claude auth logout</code> then <code>claude auth login</code></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ CATEGORY 6: WORKFLOW ═══ -->
+  <section class="category" id="workflow">
+    <div class="category-header">
+      <div class="cat-icon gold">▸</div>
+      <div class="cat-meta">
+        <div class="cat-title">Workflow & Output Quality</div>
+        <div class="cat-desc">Practices for consistent, high-quality outputs — especially in long sessions and when Claude stalls mid-response.</div>
+      </div>
+      <span class="cat-count">3 practices</span>
+    </div>
+
+    <div class="practice-grid">
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P17</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Scope work to one module at a time</div>
+            <span class="card-tag tag-gold">Workflow · Scoping</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Asking Claude to generate test cases across multiple modules at once leads to stalls, incomplete outputs, and poor coverage. One module per session produces better, more complete results — and uses fewer tokens per session. This is exactly what the <code>TARGET_MODULE</code> config block in QA_PIPELINE.md enforces.</p>
+          <div class="mini-code"><span class="c"># Each session, change only this line:</span>
+TARGET_MODULE : <span class="g">ProviderTariff</span>
+TARGET_MODULE : <span class="g">DataCentre</span>
+TARGET_MODULE : <span class="g">Transactions</span>
+TARGET_MODULE : <span class="g">IPPool</span></div>
+          <p>The methodology in QA_PIPELINE.md is module-agnostic. Only the target changes.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P18</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Use "continue" for stalled mid-stream responses</div>
+            <span class="card-tag tag-gold">Workflow · Recovery</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>When Claude shows <code>Response stalled mid-stream. The response above may be incomplete</code>, just reply <strong>continue</strong>. Claude holds the full context — it resumes exactly where it stopped without reprocessing the whole instruction set.</p>
+          <div class="mini-code"><span class="c"># Claude stalled mid-response?</span>
+Your next message: <span class="g">continue</span>
+
+<span class="c"># If it stalls again on a very large task:</span>
+<span class="g">Let's try it for one feature and see how it behaves.</span>
+
+<span class="c"># Never re-send the full prompt — that resets the context</span>
+<span class="c"># and burns the tokens you already spent</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="practice-num">P19</span>
+          <div class="card-title-wrap">
+            <div class="card-title">Always validate UI → API → DB — not just what the screen shows</div>
+            <span class="card-tag tag-gold">Workflow · Validation Depth</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Every significant action is validated at three layers — UI state, API response, DB record. Validating only the UI catches around 40% of real bugs. DB_VALIDATION.md provides the schema and queries so three-layer validation doesn't require new queries each session.</p>
+          <div class="flow">
+            <div class="flow-item"><div class="flow-num">UI</div><div class="flow-text">Toast message, table refresh, field state — what the user sees</div></div>
+            <div class="flow-item"><div class="flow-num">API</div><div class="flow-text">Response status, schema, payload values — what the backend returned</div></div>
+            <div class="flow-item"><div class="flow-num">DB</div><div class="flow-text">SQL query confirms record exists, status updated, timestamps correct — using verified column names from DB_VALIDATION.md</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>

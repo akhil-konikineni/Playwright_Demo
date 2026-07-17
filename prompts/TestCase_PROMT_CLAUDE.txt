@@ -1,0 +1,159 @@
+# TEST CASE GENERATOR — PV3 PORTAL
+
+Senior QA Engineer. Generate complete test cases for the MODULE in Part 8.
+
+## COLUMNS (12, in order)
+IssueId | Project | Issue_Type | Summary | Description | Test Steps | Test Data | Expected Result | Test Repository | Test Status | labels | Test Type
+
+**Rules:** IssueId is sequential across all sections (never resets) | Project=PV3 | Issue_Type=Test | Summary=Description (BDD, ≤255 chars) | Test Data=login row only: `credentials: ${Username}/${Password#1}` | Test Repository/Test Status/labels=first row of each TC only | Test Type=Manual | Test Status=TODO
+
+## SUMMARY (BDD, ≤255 chars)
+Positive: `Given Integra exists when user login having {Capability} Permission Then the user can {action}`
+Negative: `Given Integra exists when user login without having {Capability} Permission Then the user can not {action}`
+
+Capability: View/Filter → `Capability{Module}Get` | Create → `Capability{Module}Create` | Update/Attribute → `Capability{Module}Update`
+
+✅ `Given Integra exists when user login having CapabilityMnoGet Permission Then the user can see the List on MNO Objects`
+
+## LABELS
+`feature-{MODULE},module-{Section},sanity-{yes/no},regression-yes`
+Section: View|Filter|Create|Update|Attribute | sanity-yes=smoke only | regression-yes=always
+
+## STANDARD 4 OPENING STEPS (every TC)
+1. `login to URL: https://portal.qan.aws.eseye.io/` → login page displayed
+2. `Enter credentials and click on login` | Data: `credentials: ${statususer}/${Password#1}` → logged in successfully
+3. `Click on {Module} Management` → {Modules} menu displayed
+4. `Click on {Modules}` → [section-specific, see below]
+
+## ROW STRUCTURE
+First row: all columns filled. Subsequent rows: Test Steps + Test Data (login only) + Expected Result only; all other columns=BLANK.
+
+---
+
+## SECTIONS (all 5; IssueId continues sequentially across all sections; generate where applicable per actual UI)
+
+### S1 — VIEW | module-View | Capability{Module}Get
+Step 4: TC1="Verify user should be able to see {Module} list page" | others="{Module} list page should be displayed"
+
+- List of {MODULE} objects
+- Hyperlink visible + clickable for {PrimaryKeyField} (PK)
+- Hyperlink visible + clickable for {ForeignKeyField} (FK) — 1 TC per FK
+- Sort columns ascending/descending
+- Records-per-page selector
+- Next/last page buttons when records exceed page size; navigate next/last pages
+- Action column with disabled edit button
+- Search result view button (top-right of table)
+- Preset / save / change column view
+- Status column always before Action column
+- Status values in distinct colors per design
+- Column header hover tooltips
+- Columns match definition table (verify DB)
+- Select-all / deselect-all columns
+
+### S2 — FILTER | module-Filter | Capability{Module}Get
+Step 4: TC1="Verify user should be able to see Add filters button along with {module} list" | others="Add filters button should be displayed"
+
+- Add filter button visible; click → right-hand panel opens
+- All {module} fields listed in filter panel; field search works
+- Primary and Secondary filter sections visible
+- Filter by multiple status; select-all / deselect-all status
+- Filter by {each text field} — 1 TC per text filter field
+- Filter by single/multiple {each dropdown} — 1 TC per dropdown
+- Select-all / deselect-all per dropdown filter — 1 TC per dropdown
+- {each dropdown} options match DB — 1 TC per dropdown
+- Reset filters; clear applied filters (default view); exit filter panel
+- Filter count shown beside Primary/Secondary title
+- Multi-filter search; pagination + page-size changes; column preset; sorting
+
+### S3 — CREATE | module-Create | Capability{Module}Create
+Step 4: "User should be able to see Create {Module} button along with {module} list"
+
+- Create button visible; click → Create window opens
+- Mandatory fields marked with asterisk
+- Submit disabled when mandatory empty; enabled when filled
+- Cancel + Submit buttons present; cancel at any time
+- Success banner after creation → verify record in list + API response + DB
+- Error banner when creation fails
+- Unique field validation; regex validation per definition table
+- Fields match definition table
+- {text fields} as text boxes — 1 TC per group
+- {dropdown fields} as dropdowns — 1 TC per group
+- All active {DropdownEntity} in dropdown (verify API + DB) — 1 TC per dropdown
+- Active own+child {Entity} in FK dropdown (verify DB) — 1 TC per FK dropdown
+- Search {dropdown} by title — 1 TC per searchable dropdown
+- Tooltips for all fields match definition table description
+
+### S4 — UPDATE | module-Update | Capability{Module}Update
+Step 4: "User should be able to see Create {Module} button along with {module} list"
+
+- Edit button visible on standard fields section
+- Without permission: no Edit button; sections read-only (negative TC)
+- Edit page title; all field values pre-populated
+- Mandatory asterisk; Submit disabled/enabled per mandatory fill
+- Cancel + Submit buttons; cancel at any time
+- Success banner after update → verify list + API + DB
+- Error banner when update fails
+- Unique field validation; regex validation per definition table in edit form
+- Fields match definition table in edit form
+- {text fields} as text boxes in edit form — 1 TC per group
+- {dropdown fields} as dropdowns in edit form — 1 TC per group
+- All active {DropdownEntity} in dropdown edit form (verify DB) — 1 TC per dropdown
+- Active own+child {Entity} in FK dropdown edit form (verify DB) — 1 TC per FK dropdown
+- Search {dropdown} by title in edit form (verify DB) — 1 TC per searchable dropdown
+- Edit records in any state
+
+### S5 — ATTRIBUTE | module-Attribute | Capability{Module}Update
+Step 4: "User should be able to see Create {Module} button along with {module} list"
+After step 4 add: `Click {PrimaryKeyId}` → navigate to details page | `Scroll down` → [scenario-specific]
+
+- Edit button on attribute section (add/update/delete)
+- Attribute page title
+- Defined attributes (dropdown) + Custom attributes (add button) visible
+- Defined attribute fields match attribute definition table (verify DB)
+- Select single/multiple attributes from dropdown
+- Create single/multiple defined attributes; create single/multiple CUSTOM attributes
+- Success/error banner on attribute creation
+- Edit/update single/multiple defined attributes; edit/update single/multiple CUSTOM attributes
+- Success/error banner on attribute update
+- Delete single/multiple defined attributes; delete single/multiple CUSTOM attributes
+- Success/error banner on attribute deletion
+- Cancel creation / updation / deletion at any time
+
+---
+
+## RULES
+
+### Format
+- Summary = Description always; BDD pattern only; ≤255 chars
+- IssueId, Project, Issue_Type, Summary, Description, Test Repository, Test Status, labels → first row per TC only
+- Test Data → login row only; all others BLANK
+- All 5 sections, no skips; IssueId continues sequentially across all 5 sections
+- Use actual field names from Part 8 only — no placeholders like Field1, FilterA, Dropdown1
+- No duplicate TCs | Test Status=TODO | regression-Yes always | sanity-yes=smoke only
+
+### Out of Scope — NEVER generate
+SQL injection, XSS, CSRF, security/penetration, API load/stress/performance, network failure, browser compatibility
+
+### Consolidation — UI + API + DB in one flow per TC
+- **Create/Update success:** fill → submit → success banner → list verification → API response → DB verify
+- **Filter/search:** apply → list matches → API GET → DB verify
+- **Dropdown options:** open → UI options → API → DB active records
+- **Column/table:** headers visible → API GET → DB records
+- **Exception:** UI-structural checks (button visibility, labels, colors, asterisks, tooltips) are UI-only TCs — no API/DB steps needed
+
+---
+
+## MODULE DETAILS ← FILL IN
+
+MODULE NAME:
+CAPABILITY PREFIX:         (e.g. Apn → CapabilityApnGet/Create/Update)
+MODULE PLURAL:
+MENU PATH:                 (e.g. APN Management → APNs)
+PRIMARY KEY FIELD:
+FOREIGN KEY FIELDS:        (field → links to X page)
+TEXT FIELDS:               (name, mandatory/optional)
+DROPDOWN FIELDS:           (field → source, mandatory/optional)
+TABLE HEADERS:
+FILTER FIELDS:
+STATUS VALUES:
+TEST REPOSITORY:
