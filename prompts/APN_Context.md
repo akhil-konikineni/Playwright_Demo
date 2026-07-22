@@ -632,85 +632,11 @@ No new toolbar buttons. "+ Create APN" remains the only toolbar action.
 
 ---
 
-### Status Transition Confirmation Dialog
+### Status Transition Confirmation Dialog, Toast Messages, and Form Unsaved Changes Popup
 
-Every status transition — whether triggered from the **list Actions dropdown** or the **detail page Change Status dropdown** — opens a modal confirmation dialog before the change is applied. There is no "immediate" transition path.
+These three behaviours are identical for APN as for every other module — generic dialog anatomy, confirm-label mapping, toast format, and popup anatomy/behaviour are documented once in `QA_MASTER_CONTEXT.md` §5.3 (Status Change Confirmation Dialog), §5.4 (Status Transition Toast Messages), and §6.9 (Cancel / Unsaved Changes Popup). Load that file for the exact wording and validation rules; do not restate them here.
 
-**Dialog anatomy:**
-
-| Element | Value |
-|---|---|
-| Title | Confirm Status Change |
-| Body | `Are you sure you want to change the status from "{fromStatus}" to "{toStatus}"?` |
-| Left button | Cancel (outlined) |
-| Right button | {confirmLabel} (dark/primary) |
-| Top-right icon | ✕ Close button |
-
-- `{fromStatus}` and `{toStatus}` are the lowercase status names as they appear in the table (e.g. `"requested"`, `"setup"`, `"active"`, `"deleted"`).
-- `{confirmLabel}` matches the menu option that was clicked:
-
-| Menu option (list) / dropdown option (detail) | Confirm button label |
-|---|---|
-| Delete / Set to Deleted | **Delete** |
-| Request / Set to Requested | **Request** |
-| Set Up / Set to Setup | **Set Up** |
-| Approve / Set to Active | **Approve** |
-
-**Dismiss behaviour:**
-
-| Action | Result |
-|---|---|
-| Click backdrop (outside dialog) | Dialog stays open — backdrop click does NOT dismiss |
-| Click Cancel | Dialog closes, no transition applied |
-| Click ✕ Close | Dialog closes, no transition applied |
-| Click confirm button | Transition applied, dialog closes, success toast appears |
-
----
-
-### Status Transition Toast Messages
-
-On successful status transition, a brief success toast appears at the bottom-right of the page.
-
-**Format:** `Status changed to "{targetStatus}"`
-
-Examples:
-- `Status changed to "setup"`
-- `Status changed to "requested"`
-- `Status changed to "active"`
-- `Status changed to "deleted"`
-
-The toast auto-dismisses after a few seconds. No persistent banner is shown.
-
----
-
-### Form Unsaved Changes Popup
-
-Applies to both **Create APN** and **Edit APN** forms (Standard Fields and Attributes).
-
-**Trigger conditions:**
-
-| Action | Form has unsaved changes | Result |
-|---|---|---|
-| Click Cancel | No (empty/clean) | Form closes immediately — no popup |
-| Click Cancel | Yes (any field modified) | Unsaved Changes popup appears |
-| Click ✕ Close icon | No (empty/clean) | Form closes immediately — no popup |
-| Click ✕ Close icon | Yes (any field modified) | Unsaved Changes popup appears |
-
-**Popup anatomy:**
-
-| Element | Value |
-|---|---|
-| Title | Unsaved Changes |
-| Body | `You have unsaved changes. Are you sure you want to leave?` |
-| Left button | Stay (outlined) |
-| Right button | Discard (red/destructive) |
-
-**Popup button behaviour:**
-
-| Button | Result |
-|---|---|
-| Stay | Popup closes, form remains open, all entered data is preserved |
-| Discard | Entire form closes, all entered data is lost |
+> APN-specific note (live-verified 2026-07-10): `{fromStatus}`/`{toStatus}` render as lowercase (`"requested"`, `"setup"`, `"active"`, `"deleted"`); clicking the dialog backdrop does NOT dismiss it.
 
 ---
 

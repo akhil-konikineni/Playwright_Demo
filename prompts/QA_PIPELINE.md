@@ -1,39 +1,6 @@
 # PLAYWRIGHT QA PIPELINE — MASTER CONTEXT
 
-> **HOW TO USE:**
-> 1. Set `TARGET_MODULE` in the CONFIG block below — that is the only thing you change.
-> 2. Invoke the **`playwright-test-planner`** agent → it navigates the live app, discovers the module, saves the test plan.
-> 3. Invoke the **`playwright-test-generator`** agent → it reads the saved plan, executes each step live in the browser, writes test files.
-> 4. Run the tests. If any fail, invoke the **`playwright-test-healer`** agent → it runs, debugs, and fixes them.
-
----
-
-## ⚙️ CONFIG — CHANGE ONLY THIS
-
-```
-TARGET_MODULE        : DataCentre
-APP_URL              : https://portal.qan.aws.eseye.io/login
-ENVIRONMENT          : QAN
-PROJECT              : PV3
-
-# User for Phase 1 (scenario generation) + positive TCs — must have ALL capabilities active
-FULL_USER            : statususer
-FULL_PASSWORD        : Password#1
-
-# User for negative permission TCs — must have NO capabilities for TARGET_MODULE
-# Either a separate restricted user OR same user with permissions deactivated in DB before execution
-RESTRICTED_USER      : <restricted username>
-RESTRICTED_PASSWORD  : <restricted password>
-```
-
-> **Why two users?**
-> The Planner agent (Phase 1) needs `FULL_USER` with ALL capabilities active so it can discover
-> and interact with every feature — Create button, Edit icon, status transitions, filter panel.
-> If any capability is missing, those UI elements are hidden and the Planner cannot generate
-> scenarios for them. Negative TCs (verifying elements are hidden) are executed separately
-> using `RESTRICTED_USER` or by temporarily deactivating permissions in DB.
-
----
+> **How to run this pipeline, the CONFIG block, and the QA Review Gate:** see `prompts/QA_ORCHESTRATION.md`. This file covers Playwright automation framework conventions and the business/exploration content unique to each phase — it does not restate how to invoke the pipeline.
 
 ---
 
@@ -529,69 +496,11 @@ The Planner must open the Actions menu for a record in each state and capture ex
 
 ---
 
-### Status Change Confirmation Dialog
+### Status Change Confirmation Dialog and Toast Validation
 
-Every status transition requires the user to confirm via a modal dialog before the change is applied.
+Generic dialog anatomy, confirm-button-label mapping, the full transition matrix, and TC validation rules are documented once in `QA_MASTER_CONTEXT.md` §5.3 (Status Change Confirmation Dialog) and §5.4 (Status Transition Toast Messages) — load that file for the exact wording and rules; do not restate them here. Any per-module deltas (e.g. lowercase status values, backdrop-dismiss behaviour) live in that module's `*_Context.md` file.
 
-**Dialog anatomy:**
-
-| Element | Value |
-|---|---|
-| Title | Confirm Status Change |
-| X icon | Top-right corner — cancels and closes dialog; no change applied |
-| Body text | Are you sure you want to change the status from "{fromState}" to "{toState}"? |
-| Left button | Cancel — closes dialog, no change applied |
-| Right button | Action-specific label (see table below) — applies the transition |
-
-**Confirm button label is determined by the target state:**
-
-| Target State | Confirm Button Label |
-|---|---|
-| Requested | Request |
-| Deleted | Delete |
-| Active | Approve |
-| Setup | Set Up |
-
-**Full transition matrix with exact button labels:**
-
-| From | To | Body text (exact) | Confirm Button |
-|---|---|---|---|
-| Setup | Requested | Are you sure you want to change the status from "Setup" to "Requested"? | Request |
-| Setup | Deleted | Are you sure you want to change the status from "Setup" to "Deleted"? | Delete |
-| Setup | Active | Are you sure you want to change the status from "Setup" to "Active"? | Approve |
-| Requested | Setup | Are you sure you want to change the status from "Requested" to "Setup"? | Set Up |
-| Requested | Deleted | Are you sure you want to change the status from "Requested" to "Deleted"? | Delete |
-| Requested | Active | Are you sure you want to change the status from "Requested" to "Active"? | Approve |
-| Deleted | Setup | Are you sure you want to change the status from "Deleted" to "Setup"? | Set Up |
-| Deleted | Requested | Are you sure you want to change the status from "Deleted" to "Requested"? | Request |
-| Deleted | Active | Are you sure you want to change the status from "Deleted" to "Active"? | Approve |
-| Active | Setup | Are you sure you want to change the status from "Active" to "Setup"? | Set Up |
-| Active | Requested | Are you sure you want to change the status from "Active" to "Requested"? | Request |
-| Active | Deleted | Are you sure you want to change the status from "Active" to "Deleted"? | Delete |
-
-**Dialog validation rules for TC generation:**
-
-- Assert dialog title = "Confirm Status Change"
-- Assert body text matches exact pattern with correct from/to state names (capitalised as above)
-- Assert confirm button label matches target state mapping above
-- X icon top-right → click → dialog closes → no DB status change
-- Cancel button → dialog closes → no DB status change
-- Confirm button → dialog closes → DB status updated → success toast appears
-- Backdrop click behaviour: the Planner **must observe and record** whether clicking outside the dialog dismisses it — do not assume; capture from the live application
-
----
-
-### Toast Validation for Every Status Change
-
-After **every** status transition — successful or failed — validate the toast:
-
-| Scenario | What to validate |
-|---|---|
-| Successful status change | Success toast appears · correct message text · correct state shown in grid after toast · toast auto-closes · no duplicate toast |
-| Failed status change (permission) | Error toast appears · 401/403 shown · no state change in DB |
-| Failed status change (invalid transition) | Error toast or option simply absent · no state change in DB |
-
-The Planner must capture the **exact toast message text** observed from the live application and include it in the Module Discovery Report. Never assume the message text.
+The Planner must still capture the **exact toast message text** observed from the live application for `TARGET_MODULE` and include it in the Module Discovery Report — never assume the message text.
 
 ---
 
@@ -700,14 +609,7 @@ Some status transitions are blocked **not by permission but by data state**. The
 
 > See `prompts/DB_VALIDATION.md` → **Query F — Precondition Verification Queries** for DataCentre verify SQL.
 
-**Known APN preconditions (discovered from live app):**
-
-| Transition | Precondition | Blocked if | Expected error |
-|---|---|---|---|
-| `Requested → Active` | All mandatory fields must NOT be NULL | Any mandatory field is NULL in DB | System error toast/banner indicating mandatory fields are incomplete |
-| `Any state → Deleted` | No active ProviderTariffs using this APN | At least one active ProviderTariff references this APN | System error toast/banner indicating active ProviderTariff dependency exists |
-| `Any state → Deleted` | No active Packages using this APN | At least one active Package references this APN | System error toast/banner indicating active Package dependency exists |
-| `Any state → Deleted` | No active IPPool mapped to this APN | APN has an active IPPool configuration | System error toast/banner indicating active IPPool dependency exists |
+**Known APN preconditions:** see `APN_Context.md` → `### Status Transition Preconditions` (the canonical copy).
 
 **Known Supernet preconditions (discovered from live app):**
 
@@ -759,10 +661,7 @@ When the Planner discovers a blocked transition error during live exploration, d
 ---
 
 ### APN
-- APN Object must have a Configuration mapped to an IPPool.
-- `name` and `apnRef` must be unique within the selected `mnoId` when creating or editing.
-- `title` must be unique when creating or editing an APN.
-- Dropdowns must show only Active MNO and IPPool records — cross-verify options against DB.
+See `APN_Context.md` → `### Create / Edit Form Field Validation` (the canonical copy) for field dependencies, uniqueness scope, regex, and live-verified dropdown API endpoints.
 
 ### IPPool
 - IPPool Object must have a Configuration mapped to a DataCentre.
@@ -869,117 +768,9 @@ If the user updates non-date fields only and the Effective Date remains unchange
 
 ---
 
-> This behaviour applies to **every Create form and every Edit form across all modules**. The Planner agent must validate all scenarios below during exploration and the Generator must generate corresponding TCs in S3 (CREATE) and S4 (UPDATE).
+> This behaviour applies to **every Create form and every Edit form across all modules**. The Planner agent must validate all scenarios during exploration and the Generator must generate corresponding TCs in S3 (CREATE) and S4 (UPDATE).
 
----
-
-### Form Entry Points
-
-| Action | Form Type | Pre-filled Data |
-|---|---|---|
-| Click **Create {Module}** button | Create form | Empty — no pre-filled values |
-| Click **Edit icon** (pencil) in Actions column | Edit form | All existing record values pre-populated |
-
----
-
-### Form Controls — Always Present
-
-Every Create and Edit form must have exactly two controls visible at all times:
-
-| Control | Location | Enabled State |
-|---|---|---|
-| **Submit** button | Bottom of form | **Disabled** when any mandatory field is empty · **Enabled** only after all mandatory fields contain valid values |
-| **Cancel** button | Bottom of form | Always enabled |
-| **Clear (X) icon** | Top-right corner of the form | Always enabled |
-
----
-
-### Cancel Button Behaviour
-
-**Scenario A — Form has unsaved changes (user has typed or modified any field):**
-
-1. User clicks **Cancel**.
-2. A confirmation popup opens with:
-   - **Title:** `Unsaved Changes`
-   - **Body:** `You have unsaved changes. Are you sure you want to leave?`
-   - **Buttons:** `Stay` · `Discard`
-3. If user clicks **Discard** → form closes completely; all entered data is lost.
-4. If user clicks **Stay** → popup closes; form remains open with all entered data still intact.
-
-**Scenario B — Form has no unsaved changes (user has not typed or modified any field):**
-
-1. User clicks **Cancel**.
-2. Form closes immediately — **no confirmation popup is shown**.
-
----
-
-### Clear (X) Icon Behaviour
-
-The Clear (X) icon in the top-right corner of the form follows the **identical logic** as the Cancel button:
-
-**Scenario A — Form has unsaved changes:**
-
-1. User clicks the **X** icon.
-2. The same `Unsaved Changes` confirmation popup opens with `Stay` and `Discard` options.
-3. **Discard** → form closes; all data lost.
-4. **Stay** → popup closes; form remains open with data intact.
-
-**Scenario B — Form has no unsaved changes:**
-
-1. User clicks the **X** icon.
-2. Form closes immediately — no popup.
-
----
-
-### Validation Rules for Planner and Generator
-
-**Create form TCs to include in S3:**
-
-| # | Scenario | Expected Result |
-|---|---|---|
-| 1 | Open Create form → click Cancel immediately (no data entered) | Form closes with no popup |
-| 2 | Open Create form → enter data in any field → click Cancel | `Unsaved Changes` popup appears with Stay and Discard options |
-| 3 | Popup open after Cancel → click **Stay** | Popup closes · form remains open · entered data is preserved |
-| 4 | Popup open after Cancel → click **Discard** | Form closes · all entered data is discarded |
-| 5 | Open Create form → enter data → click **X** icon | `Unsaved Changes` popup appears with Stay and Discard options |
-| 6 | Popup open after X icon → click **Stay** | Popup closes · form remains open · entered data is preserved |
-| 7 | Popup open after X icon → click **Discard** | Form closes · all entered data is discarded |
-| 8 | Open Create form → click **X** icon immediately (no data entered) | Form closes with no popup |
-
-**Edit form TCs to include in S4:**
-
-| # | Scenario | Expected Result |
-|---|---|---|
-| 1 | Open Edit form → verify all fields are pre-populated with existing record values | All fields show correct current values |
-| 2 | Open Edit form → click Cancel immediately (no changes made) | Form closes with no popup |
-| 3 | Open Edit form → modify any field → click Cancel | `Unsaved Changes` popup appears with Stay and Discard options |
-| 4 | Popup open after Cancel → click **Stay** | Popup closes · form remains open · modified data is preserved |
-| 5 | Popup open after Cancel → click **Discard** | Form closes · record in list is unchanged (original values retained) |
-| 6 | Open Edit form → modify any field → click **X** icon | `Unsaved Changes` popup appears with Stay and Discard options |
-| 7 | Popup open after X icon → click **Stay** | Popup closes · form remains open · modified data is preserved |
-| 8 | Popup open after X icon → click **Discard** | Form closes · record in list is unchanged |
-| 9 | Open Edit form → click **X** icon immediately (no changes made) | Form closes with no popup |
-
----
-
-### Popup Validation Checklist (apply to every popup occurrence)
-
-- Popup title is exactly `Unsaved Changes`.
-- Popup body text is exactly `You have unsaved changes. Are you sure you want to leave?`.
-- Both `Stay` and `Discard` buttons are visible and enabled.
-- No other buttons or close icons are present in the popup.
-- Clicking outside the popup (backdrop) does NOT close it — user must explicitly choose Stay or Discard.
-- After Discard: the list page is visible; no partial or orphan record is created/updated.
-- After Stay: the form is fully functional; the user can continue editing and submit successfully.
-
----
-
-### BDD Label for these TCs
-
-```
-"feature-{MODULE},module-Create,sanity-no,regression-yes"   ← for Create form cancel/discard TCs
-"feature-{MODULE},module-Update,sanity-no,regression-yes"   ← for Edit form cancel/discard TCs
-```
+Form entry points, always-present controls, Cancel/Clear(X) unsaved-changes popup behaviour, the Create/Edit TC tables, the popup validation checklist, and the BDD label pattern for these TCs are documented once in `QA_MASTER_CONTEXT.md` §6.9 (Cancel / Unsaved Changes Popup) and §9.3 (Label Format) — load that file for the exact wording and rules; do not restate them here.
 
 ---
 
@@ -1038,46 +829,9 @@ Deactivate the relevant capability in DB before the TC, then restore it after. S
 **MCP server:** `npx playwright run-test-mcp-server`  
 **Role:** Senior QA Automation Architect + Exploratory Tester
 
-## 1.1 Mandatory Tool Invocation Order
+## 1.1/1.2 Tool Invocation Order and Available Tools
 
-> The agent MUST follow this sequence exactly. Skipping or reordering these calls breaks the MCP session.
-
-```
-Step 1 → planner_setup_page          ← ALWAYS call this FIRST before any browser tool
-Step 2 → browser_navigate            ← navigate to APP_URL
-Step 3 → browser_snapshot            ← explore UI state (prefer this over screenshots)
-Step 4 → browser_* tools             ← interact, explore, capture network, fill forms
-Step N → planner_save_plan           ← ALWAYS call this LAST to persist the test plan
-```
-
-**Screenshot rule:** Use `browser_take_screenshot` only when absolutely necessary (e.g., a visual bug that cannot be described). For all exploration use `browser_snapshot`.
-
-## 1.2 Available Browser Tools
-
-The agent has access to these tools via the `playwright-test` MCP server:
-
-| Tool | Purpose |
-|---|---|
-| `planner_setup_page` | Sets up the browser page — call FIRST |
-| `browser_navigate` | Go to a URL |
-| `browser_snapshot` | Capture accessibility snapshot for exploration |
-| `browser_click` | Click an element |
-| `browser_type` | Type text into a field |
-| `browser_select_option` | Select a dropdown option |
-| `browser_hover` | Hover over element |
-| `browser_press_key` | Press keyboard key |
-| `browser_wait_for` | Wait for element or condition |
-| `browser_network_requests` | Capture all network/API traffic |
-| `browser_console_messages` | Capture browser console output |
-| `browser_evaluate` | Execute JavaScript in page context |
-| `browser_handle_dialog` | Handle alert/confirm/prompt dialogs |
-| `browser_file_upload` | Upload files |
-| `browser_drag` | Drag and drop |
-| `browser_navigate_back` | Browser back navigation |
-| `browser_run_code` | Run arbitrary browser code |
-| `browser_tabs` | Manage browser tabs |
-| `browser_resize` | Resize browser window |
-| `planner_save_plan` | Save the completed test plan to file |
+Owned by `.github/agents/playwright-test-planner.agent.md` — do not restate them here.
 
 ## 1.3 Mission
 
@@ -1401,86 +1155,7 @@ Cover one TC per valid transition per permission — use the full transition map
 
 # QA REVIEW GATE — MANDATORY BEFORE PHASE 2
 
-> **The Planner agent stops here. Phase 2 must NOT be started until this review is complete and signed off.**
-
----
-
-## What the Planner agent must do before stopping
-
-Before handing off, the Planner agent must confirm both output files are saved and complete:
-
-```
-✅ Test Case Folder/test-plans/<Module>_TESTCOVERAGE.md   — test plan + discovery report
-✅ Test Case Folder/test-cases/<Module>_TESTCOVERAGE.csv  — formal test cases ready for review
-```
-
-The Planner then outputs this handoff message and stops:
-
-```
-─────────────────────────────────────────────────────────
-PHASE 1 COMPLETE — AWAITING QA REVIEW
-
-Module          : {TARGET_MODULE}
-MD file         : Test Case Folder/test-plans/{Module}_TESTCOVERAGE.md
-CSV file        : Test Case Folder/test-cases/{Module}_TESTCOVERAGE.csv
-Total TCs       : {count}
-Sections        : S1-View({n}) | S2-Filter({n}) | S3-Create({n}) | S4-Update({n}) | S5-Attribute({n}) | S6-StatusTransitions({n})
-
-⚠️  DO NOT start Phase 2 until the QA review below is complete.
-─────────────────────────────────────────────────────────
-```
-
----
-
-## QA Engineer Review Steps
-
-Open `Test Case Folder/test-cases/<Module>_TESTCOVERAGE.csv` in Excel and review every test case against the checklist below. Make edits directly in the CSV — remove invalid rows, fix incorrect steps, update expected results.
-
-### What to check per test case
-
-| Check | What to look for |
-|---|---|
-| **Scope** | TC matches only the `TARGET_MODULE` — no scenarios from other modules |
-| **BDD summary** | Follows the correct pattern, ≤255 chars, no typos |
-| **Steps completeness** | Every step is actionable, no vague steps like "verify it works" |
-| **Mandatory field coverage** | Create/Edit TCs include all mandatory fields discovered live |
-| **No API/DB steps** | CSV must contain UI/functional steps only — remove any API verification or DB query steps |
-| **Permission accuracy** | Positive TCs only for permissions the test user actually holds |
-| **Negative TC present** | At least one negative TC per permission that was found missing |
-| **Status transitions** | S6 TCs cover every row in the transition map — no gaps |
-| **Toast validation** | Every create/update/delete/status-change TC includes a toast verification step |
-| **No duplicates** | No two TCs have identical steps and expected results |
-| **IssueId sequence** | IssueId is continuous across all sections with no gaps or resets |
-| **Label format** | `feature-{MODULE},module-{Section},sanity-{yes|no},regression-yes` — no spaces |
-| **Out-of-scope rows** | Remove any SQL injection, XSS, performance, or network failure TCs |
-
-### Common invalid cases to remove
-
-- TCs for UI elements that do not exist in this module (copied from another feature).
-- Negative TCs where the user actually HAS the permission (wrong assertion).
-- Duplicate TCs that test the same flow with no meaningful variation.
-- TCs with placeholder text like `Field1`, `Dropdown1`, `<value>` instead of real field names.
-- TCs where the expected result is too vague (e.g. "system should work correctly").
-- Status transition TCs for transitions not present in the discovered transition map.
-
----
-
-## Sign-off Instruction
-
-Once all invalid cases are removed and the CSV is clean:
-
-1. Save the final reviewed CSV as `Test Case Folder/test-cases/<Module>_TESTCOVERAGE.csv` (overwrite).
-2. Update the `.md` file's **Test Coverage Summary** table to reflect the final TC counts.
-3. Then — and only then — invoke the **`playwright-test-generator`** agent to start Phase 2.
-
-> The Generator reads directly from the reviewed CSV — not the `.md`. The CSV is the single source of truth for script generation after the review gate.
-
-**Start Phase 2 with:**
-```
-@playwright-test-generator — use Test Case Folder/test-cases/{Module}_TESTCOVERAGE.csv as the test plan
-```
-
----
+> Moved to `prompts/QA_ORCHESTRATION.md` → "QA Review Gate — mandatory before Phase 2" (the canonical copy). The Planner agent stops after Phase 1; Phase 2 must NOT start until that review is complete and signed off.
 
 ---
 
@@ -1490,40 +1165,9 @@ Once all invalid cases are removed and the CSV is clean:
 **MCP server:** `npx playwright run-test-mcp-server`  
 **Role:** Playwright Test Generator — creates tests by executing steps live in the browser
 
-## 2.1 Mandatory Tool Invocation Order (per scenario)
+## 2.1/2.2 Tool Invocation Order and Available Tools
 
-> Repeat this exact sequence for EVERY scenario in the test plan. Never batch multiple scenarios in one setup.
-
-```
-Step 1 → generator_setup_page        ← call FIRST for each scenario before any browser tool
-Step 2 → browser_* tools             ← execute EACH step from the plan live in the browser
-Step 3 → generator_read_log          ← call IMMEDIATELY after executing all steps
-Step 4 → generator_write_test        ← call IMMEDIATELY after reading the log
-```
-
-## 2.2 Available Tools
-
-| Tool | Purpose |
-|---|---|
-| `generator_setup_page` | Sets up the browser page for a scenario — call FIRST per scenario |
-| `browser_click` | Click an element |
-| `browser_type` | Type text |
-| `browser_select_option` | Select dropdown option |
-| `browser_hover` | Hover over element |
-| `browser_navigate` | Navigate to URL |
-| `browser_press_key` | Press keyboard key |
-| `browser_snapshot` | Capture accessibility snapshot |
-| `browser_wait_for` | Wait for element or condition |
-| `browser_handle_dialog` | Handle dialogs |
-| `browser_evaluate` | Execute JavaScript |
-| `browser_file_upload` | Upload files |
-| `browser_drag` | Drag and drop |
-| `browser_verify_element_visible` | Assert element visible |
-| `browser_verify_list_visible` | Assert list visible |
-| `browser_verify_text_visible` | Assert text visible |
-| `browser_verify_value` | Assert element value |
-| `generator_read_log` | Read execution log — call after all steps |
-| `generator_write_test` | Write the generated test file — call after reading log |
+Owned by `.github/agents/playwright-test-generator.agent.md` — do not restate them here.
 
 ## 2.3 What the Generator Does
 
@@ -1701,33 +1345,9 @@ project-root/
 **MCP server:** `npx playwright run-test-mcp-server`  
 **Role:** Test Automation Reliability Engineer — debugs and fixes failing tests
 
-## 3.1 Mandatory Tool Invocation Order
+## 3.1/3.2 Tool Invocation Order and Available Tools
 
-```
-Step 1 → test_run                    ← run ALL tests first to identify every failure
-Step 2 → test_debug                  ← run once per failing test (pauses on error)
-Step 3 → browser_snapshot            ← examine page state at the point of failure
-Step 4 → browser_generate_locator    ← generate resilient locator if selector is broken
-Step 5 → browser_network_requests    ← inspect network if an API assertion failed
-Step 6 → browser_console_messages    ← check console errors
-Step 7 → edit                        ← apply targeted fix to the test or page object file
-Step 8 → test_run (re-run the test)  ← verify the fix
-Step 9 → repeat 2–8 until passes     ← fix one error at a time
-```
-
-## 3.2 Available Tools
-
-| Tool | Purpose |
-|---|---|
-| `test_run` | Run tests (all or specific) |
-| `test_debug` | Debug a specific failing test — pauses at error |
-| `test_list` | List all available tests |
-| `browser_snapshot` | Capture page state at failure point |
-| `browser_generate_locator` | Generate a resilient locator for an element |
-| `browser_network_requests` | Inspect network/API traffic |
-| `browser_console_messages` | Inspect browser console output |
-| `browser_evaluate` | Execute JavaScript to inspect DOM state |
-| `edit` | Edit test or page object files to apply fixes |
+Owned by `.github/agents/playwright-test-healer.agent.md` — do not restate them here.
 
 ## 3.3 Failure Diagnosis
 

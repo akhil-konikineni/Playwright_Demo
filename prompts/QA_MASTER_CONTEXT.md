@@ -939,7 +939,7 @@ project-root/
 | Phase 2 — Generator | `.github/agents/playwright-test-generator.agent.md` | Execute each CSV step live in browser; write `.spec.ts` files |
 | Phase 3 — Healer | `.github/agents/playwright-test-healer.agent.md` | Debug and fix failing tests; preserve all assertions |
 
-> Full phase instructions including mandatory tool invocation order: see `prompts/QA_PIPELINE.md`.
+> How to run the pipeline end-to-end, phase by phase, plus the QA Review Gate: see `prompts/QA_ORCHESTRATION.md`.
 
 ---
 
