@@ -47,6 +47,7 @@ test.describe('S1 — View Data Centre', () => {
   });
 
   // tc02
+  //added new commits
 
   test('Given Integra exists when user login having CapabilityDataCenterGet Permission Then Data Centre ID displays as plain non-interactive text with no hyperlink', { tag: ['@View', '@Regression'] }, async ({ page, loginPage, navigationPage, dataCentreListPage, request }) => {
     // Step 1: Login (two-step)
