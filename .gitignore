@@ -1,10 +1,12 @@
 
 # Playwright
 node_modules/
-.github/
+.github/*
+!.github/agents/
 .playwright-mcp/
 .vscode/
 playwright-report/
+ortoni-report/
 scripts/
 test-results/
 .env

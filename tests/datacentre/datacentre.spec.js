@@ -1,8 +1,7 @@
-// spec: Test Case Folder/test-cases/DataCentre_TESTCOVERAGE.csv
-// seed: tests/seed.spec.ts
+// spec: test-cases/test-cases/datacentre_testcoverage.csv
 
-const { test, expect } = require('../../fixtures/testFixtures');
-const { DataCentreApi } = require('../../utils/api/dataCentreApi');
+const { test, expect } = require('../../fixtures/test_fixtures');
+const { DataCentreApi } = require('../../utils/api/datacentre_api');
 
 // ───────────────────────────────────────────────────────────────────────────────
 // S1 — VIEW DATA CENTRE

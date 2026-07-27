@@ -13,10 +13,21 @@ module.exports = defineConfig({
 
   reporter: [
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['ortoni-report', {
+      open: process.env.CI ? 'never' : 'always',
+      folderPath: 'ortoni-report',
+      filename: 'index.html',
+      title: 'Eseye QAN Portal — Test Report',
+      projectName: 'Playwright_MCP',
+      preferredTheme: 'light',
+    }],
     ['list'],
   ],
 
   use: {
+    /* Run tests in a visible browser window, not headless */
+    headless: false,
+
     /* Capture screenshot only when a test fails */
     screenshot: 'only-on-failure',
 
