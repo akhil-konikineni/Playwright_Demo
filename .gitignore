@@ -1,13 +1,54 @@
 
 # Playwright
 node_modules/
-.github/*
-!.github/agents/
+.github/
 .playwright-mcp/
 .vscode/
 playwright-report/
 ortoni-report/
 scripts/
 test-results/
+playwright/.auth/
 .env
+.env.qan
+.env.jira
+.env.integration
+.env.stage
+.env.prod
+
+# UI evidence screenshots — captured during exploration, not tracked
+screenshots/
+
+# Playwright — other generated reports / caches
+blob-report/
+all-blobs/
+xray-blobs/
+playwright/.cache/
+.last-run.json
+
+# Local exploration artifacts (MCP page snapshots / screenshots left in root)
+dv-page.yml
+device-validation-iccid-rejected.png
+
+# Tooling — local (not shared)
+.claude/settings.local.json
+.npm/
+docs/
+.mcp.json
+
+# Internal QA-authoring artifacts — kept local, not shared in the framework repo
+context/
+agents.md
+# .github/agents/ is also excluded (via the .github/* rule above, no !exception)
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*~
 

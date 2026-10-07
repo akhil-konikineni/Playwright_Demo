@@ -1,0 +1,284 @@
+IssueId,Project,Issue_Type,Summary,Description,Test Steps,Test Data,Expected Result,Test Repository,Test Status,labels,Test Type,Component
+1,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then Setup and Requested records show an Actions menu trigger,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then Setup and Requested records show an Actions menu trigger,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Locate rows with Setup or Requested status,,Each Setup and Requested row shows a round Actions menu trigger (a dropdown button) in the Actions cell,,,,,
+2,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then a Deleted record shows an Actions menu trigger after filtering Status Deleted,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then a Deleted record shows an Actions menu trigger after filtering Status Deleted,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter set Status to Deleted and Apply then locate a Deleted record,,Deleted records are shown and each row shows a round Actions menu trigger in the Actions cell,,,,,
+3,NUI,Test,Given Integra exists when user login without having CapabilityBillingTransactionAdmin Permission Then Active and Exported records show no Actions menu trigger,Given Integra exists when user login without having CapabilityBillingTransactionAdmin Permission Then Active and Exported records show no Actions menu trigger,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Locate Active and Exported records,,Their Actions cell is empty with no menu trigger because Active and Exported transitions need Admin,,,,,
+4,NUI,Test,Given Integra exists when user login without having CapabilityBillingTransactionUpdate Permission Then no status transition control is available,Given Integra exists when user login without having CapabilityBillingTransactionUpdate Permission Then no status transition control is available,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Inspect the Actions column and open a record detail,,The Actions cell is empty on every row and the detail page shows no Change Status button,,,,,
+5,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Setup to Requested via List Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Setup to Requested via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Setup record and select Requested,,The menu offers Requested and Deleted and selecting Requested opens the Confirm Status Change dialog with body change the status to requested,,,,,
+,,,,,Click the Request button to confirm,,The status badge updates to Requested and a brief confirmation toast is shown,,,,,
+6,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Setup to Deleted via List Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Setup to Deleted via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Setup record and select Deleted,,The menu offers Requested and Deleted and selecting Deleted opens the Confirm Status Change dialog with body change the status to deleted,,,,,
+,,,,,Click the Delete button to confirm,,The record is soft deleted and leaves the default list,,,,,
+7,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Requested to Setup via List Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Requested to Setup via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Requested record and select Setup,,The menu offers Setup and Deleted and selecting Setup opens the Confirm Status Change dialog,,,,,
+,,,,,Click the Set Up button to confirm,,The status badge updates to Setup and a brief confirmation toast is shown,,,,,
+8,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Requested to Deleted via List Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Requested to Deleted via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Requested record and select Deleted then click Delete to confirm,,The record is soft deleted and leaves the default list,,,,,
+9,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Deleted to Setup via List Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Deleted to Setup via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Deleted filter then open the Actions menu on a Deleted record and select Setup then click Set Up to confirm,,The status badge updates to Setup and a brief confirmation toast is shown,,,,,
+10,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Deleted to Requested via List Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Deleted to Requested via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Deleted filter then open the Actions menu on a Deleted record and select Requested then click Request to confirm,,The status badge updates to Requested and a brief confirmation toast is shown,,,,,
+11,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Setup to Requested via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Setup to Requested via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a Setup record detail click the Change Status button select Requested then click Request to confirm,,The detail header status badge updates to Requested,,,,,
+12,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Setup to Deleted via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Setup to Deleted via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a Setup record detail click the Change Status button select Deleted then click Delete to confirm,,The record is soft deleted,,,,,
+13,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Requested to Setup via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Requested to Setup via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a Requested record detail click the Change Status button select Setup then click Set Up to confirm,,The detail header status badge updates to Setup,,,,,
+14,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Requested to Deleted via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Requested to Deleted via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a Requested record detail click the Change Status button select Deleted then click Delete to confirm,,The record is soft deleted,,,,,
+15,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Deleted to Setup via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Deleted to Setup via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Deleted filter open a Deleted record detail click the Change Status button select Setup then click Set Up to confirm,,The detail header status badge updates to Setup,,,,,
+16,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Deleted to Requested via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then user can change status from Deleted to Requested via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Deleted filter open a Deleted record detail click the Change Status button select Requested then click Request to confirm,,The detail header status badge updates to Requested,,,,,
+17,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then the Active and Exported options are not offered without higher tiers,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then the Active and Exported options are not offered without higher tiers,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Setup or Requested or Deleted record,,The menu offers only the Update permitted options and does not offer Active or Exported,,,,,
+18,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Setup to Active via List Page,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Setup to Active via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Setup record select Active then click the Active button to confirm,,The menu now offers Active and the status badge updates to Active,,,,,
+19,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Requested to Active via List Page,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Requested to Active via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Requested record select Active then click the Active button to confirm,,The status badge updates to Active,,,,,
+20,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Deleted to Active via List Page,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Deleted to Active via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Deleted filter then open the Actions menu on a Deleted record select Active then click Active to confirm,,The status badge updates to Active,,,,,
+21,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Setup to Active via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Setup to Active via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a Setup record detail click the Change Status button select Active then click Active to confirm,,The detail header status badge updates to Active,,,,,
+22,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Requested to Active via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Requested to Active via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a Requested record detail click the Change Status button select Active then click Active to confirm,,The detail header status badge updates to Active,,,,,
+23,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Deleted to Active via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then user can change status from Deleted to Active via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Deleted filter open a Deleted record detail click the Change Status button select Active then click Active to confirm,,The detail header status badge updates to Active,,,,,
+24,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then Requested to Active is blocked when a mandatory field is NULL,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then Requested to Active is blocked when a mandatory field is NULL,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Attempt Requested to Active on a record that has a NULL mandatory field then click Active to confirm,,The transition is blocked an error is shown and the status badge remains Requested,,,,,
+25,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then Requested to Active succeeds when all mandatory fields are populated,Given Integra exists when user login having CapabilityBillingTransactionApprover Permission Then Requested to Active succeeds when all mandatory fields are populated,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Attempt Requested to Active on a record with all mandatory fields populated then click Active to confirm,,The status badge updates to Active,,,,,
+26,NUI,Test,Given Integra exists when user login without having CapabilityBillingTransactionApprover Permission Then the Active option is absent from every menu,Given Integra exists when user login without having CapabilityBillingTransactionApprover Permission Then the Active option is absent from every menu,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on Setup Requested and Deleted records,,None of the menus offer the Active option,,,,,
+27,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Setup to Exported via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Setup to Exported via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Setup record select Exported then click the Exported button to confirm,,The menu offers Exported and the status badge updates to Exported,,,,,
+28,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Requested to Exported via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Requested to Exported via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on a Requested record select Exported then click Exported to confirm,,The status badge updates to Exported,,,,,
+29,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Exported via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Exported via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on an Active record select Exported then click Exported to confirm,,The Active record now shows a menu trigger and the status badge updates to Exported,,,,,
+30,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Deleted to Exported via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Deleted to Exported via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Deleted filter then open the Actions menu on a Deleted record select Exported then click Exported to confirm,,The status badge updates to Exported,,,,,
+31,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Setup to Exported via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Setup to Exported via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a Setup record detail click the Change Status button select Exported then click Exported to confirm,,The detail header status badge updates to Exported,,,,,
+32,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Exported via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Exported via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open an Active record detail click the Change Status button select Exported then click Exported to confirm,,The detail header status badge updates to Exported,,,,,
+33,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Setup via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Setup via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on an Active record select Setup then click Set Up to confirm,,The status badge updates to Setup,,,,,
+34,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Requested via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Requested via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on an Active record select Requested then click Request to confirm,,The status badge updates to Requested,,,,,
+35,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Deleted via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Deleted via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on an Active record select Deleted then click Delete to confirm,,The record is soft deleted,,,,,
+36,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Setup via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Setup via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on an Exported record select Setup then click Set Up to confirm,,The status badge updates to Setup,,,,,
+37,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Requested via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Requested via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on an Exported record select Requested then click Request to confirm,,The status badge updates to Requested,,,,,
+38,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Active via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Active via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on an Exported record select Active then click Active to confirm,,The status badge updates to Active,,,,,
+39,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Deleted via List Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Deleted via List Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on an Exported record select Deleted then click Delete to confirm,,The record is soft deleted,,,,,
+40,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then the Actions menu and Change Status are available for Active records,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then the Actions menu and Change Status are available for Active records,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Locate an Active record and open its detail,,The list row shows an Actions menu trigger and the detail page shows an enabled Change Status button,,,,,
+41,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then the Actions menu and Change Status are available for Exported records,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then the Actions menu and Change Status are available for Exported records,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Locate an Exported record and open its detail,,The list row shows an Actions menu trigger and the detail page shows an enabled Change Status button,,,,,
+42,NUI,Test,Given Integra exists when user login without having CapabilityBillingTransactionAdmin Permission Then the Exported option is absent from every menu,Given Integra exists when user login without having CapabilityBillingTransactionAdmin Permission Then the Exported option is absent from every menu,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Actions menu on Setup Requested and Deleted records without Admin,,None of the menus offer the Exported option,,,,,
+43,NUI,Test,Given Integra exists when user login without having CapabilityBillingTransactionAdmin Permission Then Active and Exported records cannot be transitioned,Given Integra exists when user login without having CapabilityBillingTransactionAdmin Permission Then Active and Exported records cannot be transitioned,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Locate Active and Exported records without Admin,,Their Actions cell is empty with no menu trigger so they cannot be transitioned,,,,,
+44,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then the Confirm Status Change dialog shows the correct text for Exported,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then the Confirm Status Change dialog shows the correct text for Exported,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Select Exported on a Setup record and inspect the dialog,,The dialog title is Confirm Status Change the body asks are you sure you want to change the status to exported and the confirm button is labelled Exported,,,,,
+45,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then dismissing the Confirm Status Change dialog makes no change,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then dismissing the Confirm Status Change dialog makes no change,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Select a transition on a Setup record then click Cancel or Close on the dialog,,No status change occurs and the record keeps its original Setup status,,,,,
+46,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then the List Page and Detail Page offer identical options for a Setup record,Given Integra exists when user login having CapabilityBillingTransactionUpdate Permission Then the List Page and Detail Page offer identical options for a Setup record,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Capture the List Actions menu options and the Detail Change Status options for the same Setup record,,Both entry points offer the identical set Requested and Deleted for the Setup record,,,,,
+47,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then the List Page and Detail Page offer identical options for an Active record,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then the List Page and Detail Page offer identical options for an Active record,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Capture the List Actions menu options and the Detail Change Status options for the same Active record,,Both entry points offer the identical set Setup Requested Deleted and Exported for the Active record,,,,,
+48,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Requested to Exported via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Requested to Exported via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a Requested record detail click the Change Status button select Exported then click Exported to confirm,,The detail header status badge updates to Exported,,,,,
+49,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Deleted to Exported via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Deleted to Exported via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Deleted filter open a Deleted record detail click the Change Status button select Exported then click Exported to confirm,,The detail header status badge updates to Exported,,,,,
+50,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Setup via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Setup via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open an Active record detail click the Change Status button select Setup then click Set Up to confirm,,The detail header status badge updates to Setup,,,,,
+51,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Requested via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Requested via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open an Active record detail click the Change Status button select Requested then click Request to confirm,,The detail header status badge updates to Requested,,,,,
+52,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Deleted via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Active to Deleted via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open an Active record detail click the Change Status button select Deleted then click Delete to confirm,,The record is soft deleted,,,,,
+53,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Setup via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Setup via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open an Exported record detail click the Change Status button select Setup then click Set Up to confirm,,The detail header status badge updates to Setup,,,,,
+54,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Requested via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Requested via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open an Exported record detail click the Change Status button select Requested then click Request to confirm,,The detail header status badge updates to Requested,,,,,
+55,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Active via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Active via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open an Exported record detail click the Change Status button select Active then click Active to confirm,,The detail header status badge updates to Active,,,,,
+56,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Deleted via Detail Page,Given Integra exists when user login having CapabilityBillingTransactionAdmin Permission Then user can change status from Exported to Deleted via Detail Page,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-StatusTransition,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open an Exported record detail click the Change Status button select Deleted then click Delete to confirm,,The record is soft deleted,,,,,
