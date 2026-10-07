@@ -1,0 +1,68 @@
+# =============================================================================
+# GitLab CI/CD — Playwright QA framework (Eseye QAN Portal)
+# GitLab equivalent of .github/workflows/playwright.yml.
+#
+# ⚠ These are LIVE end-to-end tests. They log in to the real portal (WAF-sensitive
+#   — hence workers:1 / serial in playwright.config.js) and query the live DB. So:
+#     • Use a runner that can reach BOTH the portal host and the DB host — usually a
+#       self-hosted / internal runner (shared SaaS runners cannot reach internal QAN).
+#     • This pipeline does NOT run on every push; it runs on a schedule or manually.
+#
+# Secrets — add as CI/CD Variables (Settings → CI/CD → Variables; masked + protected).
+# config/env.js reads <ENV>_* straight from the environment, so NO .env file is written
+# in CI. For TEST_ENV=QAN provide:
+#     QAN_URL, QAN_USERNAME, QAN_PASSWORD,
+#     QAN_DB_HOST, QAN_DB_USER, QAN_DB_PASSWORD, QAN_DB_NAME
+# (For another environment set TEST_ENV=INTEGRATION|STAGE|PROD and supply the matching
+#  <ENV>_* variables — the exact same test code runs unchanged.)
+# =============================================================================
+
+stages:
+  - test
+
+variables:
+  # Which environment the framework targets (config/env.js → <ENV>_* variables).
+  TEST_ENV: "QAN"
+  # JUnit output name for GitLab's test-report tab (see reports:junit below).
+  PLAYWRIGHT_JUNIT_OUTPUT_NAME: "results.xml"
+  # Keep the npm cache inside the workspace so GitLab can cache it between runs.
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  # GitLab already sets CI=true automatically → playwright.config.js enables retries + forbidOnly.
+
+playwright-e2e:
+  stage: test
+  # Official Playwright image: browsers + OS deps + xvfb preinstalled.
+  # Keep this tag in sync with @playwright/test in package.json (currently ^1.60.0).
+  image: mcr.microsoft.com/playwright:v1.60.0-jammy
+  timeout: 90m
+  interruptible: true
+  # Run on a schedule (Pipelines → Schedules) or manually ("Run pipeline"); never
+  # automatically on push — concurrent logins would trip the portal's WAF.
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: manual
+    - when: manual
+      allow_failure: false
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+  before_script:
+    - node --version && npx playwright --version
+    - npm ci --cache "$CI_PROJECT_DIR/.npm" --prefer-offline
+  script:
+    # playwright.config.js runs headed (headless:false) for local visibility, so on a
+    # headless CI runner wrap the run in a virtual display (xvfb). Override reporters to
+    # emit the HTML report + JUnit (drops the local-only ortoni reporter in CI).
+    - xvfb-run -a npx playwright test --reporter=html,junit,list
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - playwright-report/   # browsable HTML report
+      - test-results/        # traces / videos / screenshots for failed tests
+    reports:
+      junit: results.xml     # populates GitLab's "Tests" tab on the pipeline/MR

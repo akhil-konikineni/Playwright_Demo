@@ -1,0 +1,224 @@
+IssueId,Project,Issue_Type,Summary,Description,Test Steps,Test Data,Expected Result,Test Repository,Test Status,labels,Test Type,Component
+1,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can see the Billing Transactions list with correct heading and breadcrumb,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can see the Billing Transactions list with correct heading and breadcrumb,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Verify h1 is Billing Transactions and breadcrumb shows Home > Finance > Billing Transactions,,Heading and breadcrumb are correct,,,,,
+2,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can see the grid columns in order,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can see the grid columns in order,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Verify grid headers in order: Billing Transaction Id | Portfolio | Name | Title | Category | Item Category | Start Date | Value | Status | Actions,,All ten column headers are visible in the correct order,,,,,
+3,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can open a transaction detail from the Billing Transaction Id hyperlink,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can open a transaction detail from the Billing Transaction Id hyperlink,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Click a Billing Transaction Id hyperlink,,User navigates to the detail page at /finance/billing-transactions/{id},,,,,
+4,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can open the Portfolio detail from the Portfolio hyperlink,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can open the Portfolio detail from the Portfolio hyperlink,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Click a Portfolio hyperlink,,User navigates to the portfolio detail page,,,,,
+5,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can navigate pages using pagination controls with default page size 50,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can navigate pages using pagination controls with default page size 50,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Verify the footer shows Showing per page 50 and First and Previous are disabled on page 1,,Default page size is 50 and First and Previous are disabled on the first page,,,,,
+,,,,,Click Next then Last then a numbered page,,The grid loads the corresponding page each time,,,,,
+6,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can change the rows per page using the page size selector,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can change the rows per page using the page size selector,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Showing per page selector and choose a different size,,The grid reloads with the selected number of rows per page,,,,,
+7,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can search by Name from the toolbar without opening Add filter,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can search by Name from the toolbar without opening Add filter,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Type a Name fragment in the Search by Name box on the toolbar without opening Add filter,,The list filters to rows whose Name matches without opening the filter drawer,,,,,
+8,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can open the filter panel with Primary and Secondary sections,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can open the filter panel with Primary and Secondary sections,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Click Add filter,,Filters drawer opens with Search filters box Primary Filters and Secondary Filters and Reset Apply and Close,,,,,
+9,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can search the filter field list,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can search the filter field list,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter and type in the Search filters field,,Only matching filter fields remain visible in the drawer,,,,,
+10,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can see all fifteen filter fields in the panel,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can see all fifteen filter fields in the panel,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter and review the fields,,Primary shows Status Name Title Start Date Stop Date Value Quantity and Secondary shows Portfolio Package Category Package Item Category Billing Subscription ICC Type Package Package Item and Product,,,,,
+11,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Status,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Status,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter set Status to Active and click Apply,,Only rows with Status Active are shown,,,,,
+12,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter by Status Deleted to surface soft deleted rows,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter by Status Deleted to surface soft deleted rows,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter set Status to Deleted and click Apply,,Soft deleted rows appear which are hidden from the default list,,,,,
+13,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Name,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Name,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter enter a Name fragment in Filter By Name and click Apply,,Only rows whose Name matches the entered value are shown,,,,,
+14,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Title,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Title,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter enter a Title fragment in Filter By Title and click Apply,,Only rows whose Title matches the entered value are shown,,,,,
+15,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Start Date,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Start Date,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the Start Date picker select a date and click Apply,,Results respect the selected Start Date condition,,,,,
+16,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Stop Date,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Stop Date,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the Stop Date picker select a date and click Apply,,Results respect the selected Stop Date condition,,,,,
+17,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter by a Start and Stop date range,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter by a Start and Stop date range,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter set both Start Date and Stop Date and click Apply,,Only rows within the selected date range are shown,,,,,
+18,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the date picker allows selecting and clearing a date,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the date picker allows selecting and clearing a date,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open a date filter select a date from the calendar then clear it,,The calendar opens the date is applied to the field and clearing resets the field,,,,,
+19,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Value,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Value,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter enter a numeric Value in Filter By Value and click Apply,,Only rows matching the entered Value condition are shown,,,,,
+20,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Value filter accepts decimals and negatives and rejects non numeric input,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Value filter accepts decimals and negatives and rejects non numeric input,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Enter a decimal value then a negative value then letters in Filter By Value,,Decimal and negative values are accepted and non numeric input is rejected or ignored,,,,,
+21,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Quantity,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Quantity,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter enter a Quantity in Filter By Quantity and click Apply,,Only rows matching the entered Quantity are shown,,,,,
+22,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Quantity filter rejects non integer input,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Quantity filter rejects non integer input,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Enter a decimal or letters in Filter By Quantity,,Non integer input is rejected per the integer only rule,,,,,
+23,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Portfolio,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Portfolio,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the Portfolio dropdown select a portfolio and click Apply,,Only rows belonging to the selected Portfolio are shown,,,,,
+24,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Portfolio filter lists only in scope portfolios,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Portfolio filter lists only in scope portfolios,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Portfolio filter dropdown,,Only portfolios within the users visible subtree are listed and out of scope portfolios are absent,,,,,
+25,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Package Category,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Package Category,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the Package Category dropdown select a category and click Apply,,Only rows with the selected Category are shown,,,,,
+26,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Package Item Category,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Package Item Category,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the Package Item Category dropdown select an item category and click Apply,,Only rows with the selected Item Category are shown,,,,,
+27,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Billing Subscription,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Billing Subscription,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the Billing Subscription dropdown select a subscription and click Apply,,Only transactions linked to the selected Billing Subscription are shown,,,,,
+28,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by ICC Type,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by ICC Type,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the ICC Type dropdown select a value and click Apply,,Only rows matching the selected ICC Type are shown,,,,,
+29,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Package,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Package,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the Package dropdown select a package and click Apply,,Only rows matching the selected Package are shown,,,,,
+30,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Package Item filter is disabled until a Package is selected,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Package Item filter is disabled until a Package is selected,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter and inspect the Package Item field without selecting a Package,,The Package Item field shows the helper Select Package first and cannot be used until a Package is selected,,,,,
+31,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Package Item filter becomes usable and constrained after selecting a Package,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Package Item filter becomes usable and constrained after selecting a Package,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter select a Package then open the Package Item dropdown select an item and click Apply,,The Package Item field enables and lists only items of the chosen Package and results match both Package and Package Item,,,,,
+32,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Product,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can filter the list by Product,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter open the Product dropdown select a product and click Apply,,Only rows matching the selected Product are shown,,,,,
+33,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Category and Item Category dropdown values match active records,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the Category and Item Category dropdown values match active records,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open the Package Category and Package Item Category dropdowns,,The listed options correspond to active package categories and active package item categories,,,,,
+34,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can apply multiple filters Status and Portfolio together,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can apply multiple filters Status and Portfolio together,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter set Status to Active and select a Portfolio then click Apply,,Only rows that satisfy both the Status and the Portfolio are shown,,,,,
+35,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can apply multiple filters date range and Value together,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can apply multiple filters date range and Value together,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter set a Start and Stop date range and a Value then click Apply,,Only rows that satisfy the date range and the Value are shown,,,,,
+36,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then clearing one filter restores that dimension of results,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then clearing one filter restores that dimension of results,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status and Portfolio filters then remove only the Status filter,,The list widens back to all statuses for the selected Portfolio while the Portfolio filter still holds,,,,,
+37,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can Reset all filters from within the drawer,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can Reset all filters from within the drawer,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply several filters then click Reset in the drawer,,All filter inputs are cleared and the default list is restored on Apply,,,,,
+38,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can Clear all active filters from the toolbar,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can Clear all active filters from the toolbar,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,With filters and a Search by Name value active click Clear all on the toolbar,,All filters and the search box are cleared and the unfiltered default list is shown,,,,,
+39,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then a no result filter combination is handled gracefully,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then a no result filter combination is handled gracefully,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply a filter combination that matches no records,,The grid shows an empty state with no rows and no error and no stale results,,,,,
+40,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then a filter persists across pagination and matches the database,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then a filter persists across pagination and matches the database,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Apply Status Active then page through Next and Last and capture the filtered Billing Transaction Ids,,The filter persists across pages and the captured ids match the database result for status active within the users visible portfolio scope,,,,,
+41,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can access and use Billing Transactions filtering,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the user can access and use Billing Transactions filtering,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Open Add filter apply any filter and click Apply,,The filter panel is usable and returns scoped results for a Get permitted user,,,,,
+42,NUI,Test,Given Integra exists when user login without having CapabilityBillingTransactionGet Permission Then the user can not see or access the Billing Transactions list,Given Integra exists when user login without having CapabilityBillingTransactionGet Permission Then the user can not see or access the Billing Transactions list,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Verify Billing Transactions is not visible under Finance without the Get capability,,The Billing Transactions menu item is hidden,,,,,
+,,,,,Navigate directly to /finance/billing-transactions,,Access is blocked and the list does not render,,,,,
+43,NUI,Test,Given Integra exists when user login without having CapabilityBillingTransactionGet Permission Then the filter API is blocked,Given Integra exists when user login without having CapabilityBillingTransactionGet Permission Then the filter API is blocked,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Call the billingTransaction execute endpoint with filter parameters while lacking the Get capability,,The request returns 401 or 403 and no data is returned,,,,,
+44,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then filtering can not surface data outside the users portfolio scope,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then filtering can not surface data outside the users portfolio scope,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-Filter,sanity-yes,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Attempt to filter toward a portfolio outside the users subtree,,No unauthorized rows appear and out of scope portfolios are not selectable,,,,,
+45,NUI,Test,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the list and filtered results stay within the users sphere,Given Integra exists when user login having CapabilityBillingTransactionGet Permission Then the list and filtered results stay within the users sphere,login to URL: https://portal-host.qan.aws.eseye.io/auth,,login page should be displayed successfully,NUI-BillingTransaction,TODO,"feature-BillingTransaction,module-View,sanity-no,regression-yes",Manual,UI
+,,,,,Enter credentials and click on login,credentials: statususer/Password#1,User should be logged in successfully,,,,,
+,,,,,Click on Finance,,Finance menu should be displayed,,,,,
+,,,,,Click on Billing Transactions,,Billing Transactions list page should be displayed,,,,,
+,,,,,Compare the list and filtered results with the database,,All list and filtered results are bounded to the users visible portfolio subtree and never the whole table,,,,,

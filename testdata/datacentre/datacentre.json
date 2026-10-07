@@ -15,9 +15,9 @@
     "id": 5426
   },
   "api": {
-    "listEndpoint": "https://mno.api.qan.eseye.io/v2/dataCentre?pageToken=0&pageSize=50&getPageCount=false&enrich=title",
-    "countryEndpoint": "https://common.api.qan.eseye.io/v2/country",
-    "baseUrl": "https://mno.api.qan.eseye.io/v2/dataCentre"
+    "listEndpoint": "https://portal-host.int.aws.eseye.io/api/catalog/dataCentre/execute",
+    "countryEndpoint": "https://portal-host.int.aws.eseye.io/api/catalog/country/execute",
+    "baseUrl": "https://portal-host.int.aws.eseye.io/api/catalog/dataCentreById/execute"
   },
   "filter": {
     "existingName": "QAAutoDC01",
